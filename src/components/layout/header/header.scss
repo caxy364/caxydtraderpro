@@ -1,0 +1,619 @@
+@use 'components/shared/styles/constants' as *;
+@use 'components/shared/styles/mixins' as *;
+
+.app-header {
+    color: #000000;
+
+    &__account-settings {
+        padding-inline-end: 1.2rem;
+        border-inline-end: 0.1rem solid rgba(0, 0, 0, 0.2);
+    }
+
+    &__account-settings,
+    .notifications__wrapper,
+    &__menu {
+        svg > path,
+        svg > g > path {
+            fill: #000000;
+        }
+    }
+
+    // Ensure all text in header is dark for green background
+    * {
+        color: #000000 !important;
+    }
+
+    // Override button text colors
+    button {
+        color: #000000 !important;
+    }
+}
+
+// Brand text styling - Desktop only
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 0.5rem;
+    padding: 0 0.25rem;
+    line-height: 1.2;
+    
+    &__name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #000000;
+        background: linear-gradient(135deg, #03da1cff, #02b816ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
+    }
+    
+    &__powered {
+        font-size: 0.65rem;
+        font-weight: 400;
+        color: #666666;
+        margin-top: 2px;
+        
+        span {
+            background: linear-gradient(135deg, #ff444f, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 500;
+        }
+    }
+}
+
+// SwiftCashFX Buttons Styling
+.swiftcash-buttons {
+    display: flex;
+    gap: 0.6rem;
+    margin-right: 1rem;
+    align-items: center;
+}
+
+.swiftcash-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+    white-space: nowrap;
+    font-family: inherit;
+    
+    &--deposit {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white !important;
+        
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+        }
+        
+        &:active {
+            transform: translateY(0);
+        }
+    }
+    
+    &--withdraw {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white !important;
+        
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+        }
+        
+        &:active {
+            transform: translateY(0);
+        }
+    }
+}
+
+// Social Dropdown Styles
+.social-dropdown-container {
+    position: relative;
+    display: inline-block;
+    margin: 0 4px;
+}
+
+.info-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 50%;
+
+    &:hover {
+        transform: scale(1.05);
+        background: rgba(92, 207, 180, 0.1);
+    }
+}
+
+.social-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 1000;
+    overflow: hidden;
+
+    &__header {
+        padding: 10px 12px;
+        background: #f5f5f5;
+        font-weight: 600;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 13px;
+        color: #333;
+    }
+
+    &__links {
+        padding: 4px 0;
+    }
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    width: 100%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: left;
+
+    &:hover {
+        background-color: #f5f5f5;
+    }
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    &__name {
+        font-size: 13px;
+        color: #333;
+        font-weight: 500;
+    }
+}
+
+// Mobile specific - Keep header height unchanged, only adjust element sizes
+@media (max-width: 768px) {
+    // Hide brand text on mobile to save space
+    .brand-text {
+        display: none;
+    }
+    
+    // Make SwiftCash buttons more compact but keep within header
+    .swiftcash-buttons {
+        margin-right: 0.3rem;
+        gap: 0.3rem;
+    }
+    
+    .swiftcash-button {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.6rem;
+        border-radius: 4px;
+        line-height: 1.2;
+    }
+    
+    // Make info icon smaller
+    .info-icon {
+        padding: 2px;
+        
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+    
+    // Adjust account switcher to fit without increasing header height
+    .deriv-account-switcher__button {
+        padding: 0.3rem 0.5rem;
+        
+        .deriv-account-switcher__currency {
+            font-size: 10px;
+        }
+        
+        .deriv-account-switcher__balance {
+            font-size: 9px;
+        }
+    }
+    
+    // Adjust auth buttons to fit
+    .auth-actions {
+        button {
+            margin-inline-end: 0.4rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.65rem;
+            line-height: 1.2;
+            min-height: auto;
+        }
+    }
+    
+    // Make mobile menu icon smaller if needed
+    .mobile-menu__icon {
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+    
+    // Ensure app logo is appropriately sized
+    .app-logo {
+        img, svg {
+            max-height: 28px;
+            width: auto;
+        }
+    }
+    
+    // Centered dropdown on mobile
+    .social-dropdown-container {
+        position: static;
+    }
+    
+    .social-dropdown {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        right: auto;
+        bottom: auto;
+        transform: translate(-50%, -50%);
+        margin-top: 0;
+        min-width: 200px;
+        max-width: 90%;
+        z-index: 10000;
+        
+        &::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+    }
+}
+
+// Tablet adjustments
+@media (min-width: 769px) and (max-width: 1024px) {
+    .swiftcash-button {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.8rem;
+    }
+    
+    .brand-text__name {
+        font-size: 1rem;
+    }
+    
+    .brand-text__powered {
+        font-size: 0.6rem;
+    }
+    
+    .swiftcash-buttons {
+        gap: 0.5rem;
+        margin-right: 0.8rem;
+    }
+}
+
+// Keep all existing account switcher styles unchanged
+.account-switcher {
+    &__item {
+        .deriv-account-switcher-item {
+            padding: 0.6rem 1.6rem;
+
+            &__detail {
+                .deriv-account-switcher-item__currency {
+                    margin-bottom: 2px;
+                    font-size: 1.4rem;
+                }
+            }
+
+            &__icon {
+                margin-right: unset;
+                margin-inline-end: 10px;
+            }
+        }
+
+        &--disabled {
+            opacity: 0.32;
+        }
+    }
+
+    &__separator:after {
+        background-color: var(--general-section-2);
+        content: '';
+        height: 4px;
+        position: absolute;
+        width: 100%;
+        z-index: 1;
+    }
+
+    &-footer {
+        background: varr(--general-main-1);
+
+        &__actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            background-color: var(--general-main-1);
+
+            &--hide-manage-button {
+                justify-content: flex-end;
+            }
+
+            .manage-button {
+                background: none;
+                border: 1px solid var(--button-secondary-default);
+                margin-inline-end: 0.7rem;
+                height: auto;
+                padding: 0.4rem 1.2rem;
+                white-space: break-spaces;
+
+                &:hover {
+                    background-color: unset !important;
+                }
+
+                span {
+                    color: var(--text-prominent);
+                    font-size: var(--text-size-xs);
+                    cursor: pointer;
+                    font-weight: 700;
+                }
+            }
+        }
+    }
+}
+
+// Keep auth actions styles
+.auth-actions {
+    display: flex;
+    padding-block: 8px;
+
+    button {
+        font-weight: 400;
+        margin-inline-end: 1.6rem;
+    }
+}
+
+// Keep login button red styles
+.login-button-red {
+    background: #ff444f !important;
+    color: white !important;
+    border: 1px solid #ff444f !important;
+
+    &:hover:not([disabled]) {
+        background: #e63946 !important;
+        border-color: #e63946 !important;
+    }
+
+    &:active:not([disabled]) {
+        background: #d62d20 !important;
+        border-color: #d62d20 !important;
+    }
+
+    .dc-btn__text {
+        color: white !important;
+    }
+
+    .dc-btn__icon {
+        color: white !important;
+    }
+}
+
+// Keep all other existing Deriv styles untouched
+.derivs-secondary-tabs {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--general-main-1);
+
+    .derivs-text__size--md {
+        font-size: 14px;
+        line-height: 18px;
+    }
+}
+
+.deriv-account-switcher {
+    &-item {
+        &__balance {
+            button {
+                border-width: 1px;
+                height: 2.4rem;
+                min-width: 4.8rem;
+
+                span {
+                    color: var(--text-prominent) !important;
+                }
+            }
+        }
+    }
+
+    &__button {
+        margin-inline-end: 0.8rem;
+
+        @include mobile-or-tablet-screen {
+            margin-inline-end: 0;
+        }
+
+        .deriv-context-menu {
+            box-shadow: 0 0 2px 0 var(--du-shadow-box, #0899e114);
+        }
+
+        .deriv-account-switcher__balance + svg > path {
+            fill: var(--text-general);
+        }
+
+        &:hover {
+            background-color: unset;
+        }
+    }
+
+    &__currency {
+        margin-bottom: 2px;
+    }
+
+    &__icon {
+        margin-right: 7px;
+    }
+
+    &__balance {
+        padding: 0 1rem 0.1rem 0;
+    }
+
+    &__list {
+        &.account-switcher-panel {
+            padding: 0.4rem 0.8rem 0;
+
+            .account-switcher-panel__no-eu-accounts {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .add-button {
+                    background: none;
+
+                    span {
+                        color: #0d0dbb;
+                        font-size: 12px;
+                        border: solid 2px var(--text-disabled-1);
+                        padding: 0.1rem 1.6rem;
+                        border-radius: 0.5em;
+                        cursor: pointer;
+                    }
+                }
+
+                .deriv-account-switcher-item {
+                    background: none;
+                }
+            }
+        }
+
+        .deriv-accordion {
+            &__content {
+                background: unset;
+            }
+
+            &__text {
+                margin-top: 0;
+            }
+
+            &__icon {
+                margin-left: unset;
+                margin-inline-start: auto;
+            }
+        }
+    }
+
+    &__title {
+        height: 4rem;
+        margin: 0 auto;
+        padding: 1.2rem 1.6rem;
+    }
+
+    &__container--mobile {
+        min-height: auto;
+    }
+
+    &__container {
+        max-height: 80vh;
+        overflow: auto;
+        background: var(--general-main-1);
+        background-color: var(--general-main-2);
+        border-radius: 4px;
+        box-shadow: 0 8px 16px 0 var(--shadow-menu) !important;
+        position: absolute;
+        transition:
+            transform 0.3s ease,
+            opacity 0.25s linear;
+        width: 320px;
+        top: 55px;
+        right: unset;
+        inset-inline-end: 0;
+    }
+
+    &__logout {
+        align-items: center;
+        display: flex;
+        grid-column: 2 / 3;
+        justify-content: flex-end;
+        justify-self: end;
+        padding: 1.6em 1.3em;
+
+        &-text {
+            margin-inline-end: 1rem;
+            font-size: var(--text-size-xs);
+        }
+
+        &--loader {
+            display: flex;
+            justify-content: flex-end;
+            padding: 16px;
+        }
+    }
+
+    &__tradershub-link {
+        padding: 1.2rem 2.5rem 0.6rem 0.8rem;
+        background: var(--general-main-1);
+    }
+
+    &__footer {
+        padding: 0;
+        display: block;
+    }
+}
+
+.languages-modal {
+    background: var(--general-section-1);
+
+    .deriv-modal__header {
+        border-bottom: 2px solid var(--general-section-5);
+    }
+
+    .deriv-modal__close-icon {
+        path {
+            fill: var(--text-prominent);
+        }
+    }
+
+    .deriv-text {
+        color: var(--text-prominent) !important;
+    }
+}
+
+.deposit-button,
+.manage-funds-button {
+    margin-inline-end: 1.6rem;
+}
+
+.deriv-accordion--underline {
+    border-bottom: none;
+}

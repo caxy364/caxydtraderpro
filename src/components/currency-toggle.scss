@@ -1,0 +1,78 @@
+/**
+ * currency-toggle.scss
+ * 
+ * Place at: src/components/currency-toggle/currency-toggle.scss
+ */
+
+.currency-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    user-select: none;
+
+    &__label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #94a3b8;
+        transition: color 0.2s ease;
+        letter-spacing: 0.3px;
+
+        &--active {
+            color: #1f2937;
+        }
+    }
+
+    &__switch {
+        position: relative;
+        width: 36px;
+        height: 20px;
+        border-radius: 10px;
+        background: #e2e8f0;
+        border: none;
+        cursor: pointer;
+        transition: background 0.25s ease;
+        padding: 0;
+        outline: none;
+
+        &--kes {
+            background: linear-axis(145deg, #006600, #008000);
+            background: #006600; // Kenya green
+        }
+
+        &:not(.currency-toggle__switch--kes) {
+            background: #3b82f6; // USD blue
+        }
+    }
+
+    &__thumb {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #ffffff;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
+        .currency-toggle__switch--kes & {
+            transform: translateX(16px);
+        }
+    }
+
+    &__loading {
+        font-size: 12px;
+        color: #94a3b8;
+        animation: spin 1s linear infinite;
+    }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}

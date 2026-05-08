@@ -1,0 +1,25 @@
+@use 'components/shared/styles/mixins' as *;
+
+.layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    .deriv-header {
+        background: linear-gradient(135deg, #bce409 0%, #cfe603 100%);
+        height: 4.9rem;
+        box-shadow: 0 2px 8px rgba(235, 238, 239, 0.15);
+
+        @include mobile-or-tablet-screen {
+            height: 4rem;
+        }
+    }
+
+    &.endpoint-page {
+        background-color: #d5c7c7;
+
+        .main-body {
+            background-color: #d9d1d1;
+        }
+    }
+}

@@ -1,0 +1,49 @@
+.digit-grid {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: #0e0e0e;
+    border-radius: 8px;
+}
+
+.digit-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+}
+
+.digit-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.digit-circle.strongest { border-color: #4bb4b3; background: rgba(75, 180, 179, 0.1); }
+.digit-circle.weakest { border-color: #ff444f; background: rgba(255, 68, 79, 0.1); }
+
+.number { font-size: 16px; font-weight: bold; color: white; }
+.percent { font-size: 10px; color: #999; }
+
+/* THE MOVING CURSOR EFFECT */
+.cursor-indicator {
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    margin-top: 10px;
+    opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.is-current .cursor-indicator {
+    opacity: 1;
+    box-shadow: 0 0 10px white;
+}

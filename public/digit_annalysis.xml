@@ -1,0 +1,665 @@
+<xml xmlns="https://developers.google.com/blockly/xml" is_dbot="true" collection="false">
+  <variables>
+    <variable id="stake">stake</variable>
+    <variable id="base_stake">base_stake</variable>
+    <variable id="martingale">martingale</variable>
+    <variable id="martingale_counter">martingale_counter</variable>
+    <variable id="martingale_limit">martingale_limit</variable>
+    <variable id="recovery_mode">recovery_mode</variable>
+    <variable id="trigger_digits">trigger_digits</variable>
+    <variable id="type1_contract">type1_contract</variable>
+    <variable id="type2_contract">type2_contract</variable>
+    <variable id="type1_prediction">type1_prediction</variable>
+    <variable id="type2_prediction">type2_prediction</variable>
+    <variable id="tp_target">tp_target</variable>
+    <variable id="sl_target">sl_target</variable>
+    <variable id="trade_locked">trade_locked</variable>
+    <variable id="tick_duration">tick_duration</variable>
+  </variables>
+
+  <!-- Trade Definition -->
+  <block type="trade_definition" id="dual_trade_def" deletable="false" x="0" y="110">
+    <statement name="TRADE_OPTIONS">
+      <block type="trade_definition_market" id="dual_market" deletable="false" movable="false">
+        <field name="MARKET_LIST">synthetic_index</field>
+        <field name="SUBMARKET_LIST">random_index</field>
+        <field name="SYMBOL_LIST">1HZ100V</field>
+        <next>
+          <block type="trade_definition_tradetype" id="dual_type" deletable="false" movable="false">
+            <field name="TRADETYPECAT_LIST">digits</field>
+            <field name="TRADETYPE_LIST">overunder</field>
+            <next>
+              <block type="trade_definition_contracttype" id="dual_contract" deletable="false" movable="false">
+                <field name="TYPE_LIST">both</field>
+                <next>
+                  <block type="trade_definition_candleinterval" id="dual_candle" deletable="false" movable="false">
+                    <field name="CANDLEINTERVAL_LIST">1</field>
+                    <next>
+                      <block type="trade_definition_restartbuysell" id="dual_restart" deletable="false" movable="false">
+                        <field name="TIME_MACHINE_ENABLED">FALSE</field>
+                        <next>
+                          <block type="trade_definition_restartonerror" id="dual_error" deletable="false" movable="false">
+                            <field name="RESTARTONERROR">TRUE</field>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+
+    <!-- Initialization -->
+    <statement name="INITIALIZATION">
+      <block type="variables_set" id="init_stake">
+        <field name="VAR" id="stake">stake</field>
+        <value name="VALUE">
+          <block type="math_number" id="stake_val">
+            <field name="NUM">0.35</field>
+          </block>
+        </value>
+        <next>
+          <block type="variables_set" id="init_base">
+            <field name="VAR" id="base_stake">base_stake</field>
+            <value name="VALUE">
+              <block type="math_number" id="base_val">
+                <field name="NUM">0.35</field>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set" id="init_mart">
+                <field name="VAR" id="martingale">martingale</field>
+                <value name="VALUE">
+                  <block type="math_number" id="mart_val">
+                    <field name="NUM">2.0</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="variables_set" id="init_mart_counter">
+                    <field name="VAR" id="martingale_counter">martingale_counter</field>
+                    <value name="VALUE">
+                      <block type="math_number" id="mart_counter_val">
+                        <field name="NUM">0</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="variables_set" id="init_mart_limit">
+                        <field name="VAR" id="martingale_limit">martingale_limit</field>
+                        <value name="VALUE">
+                          <block type="math_number" id="mart_limit_val">
+                            <field name="NUM">5</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="variables_set" id="init_recovery">
+                            <field name="VAR" id="recovery_mode">recovery_mode</field>
+                            <value name="VALUE">
+                              <block type="logic_boolean" id="recovery_false">
+                                <field name="BOOL">FALSE</field>
+                              </block>
+                            </value>
+                          </block>
+                          <next>
+                            <block type="variables_set" id="init_trade_locked">
+                              <field name="VAR" id="trade_locked">trade_locked</field>
+                              <value name="VALUE">
+                                <block type="logic_boolean" id="locked_false">
+                                  <field name="BOOL">FALSE</field>
+                                </block>
+                              </value>
+                            </block>
+                            <next>
+                              <block type="variables_set" id="init_tp">
+                                <field name="VAR" id="tp_target">tp_target</field>
+                                <value name="VALUE">
+                                  <block type="math_number" id="tp_val">
+                                    <field name="NUM">5</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="variables_set" id="init_sl">
+                                    <field name="VAR" id="sl_target">sl_target</field>
+                                    <value name="VALUE">
+                                      <block type="math_number" id="sl_val">
+                                        <field name="NUM">2.5</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                  <next>
+                                    <block type="variables_set" id="init_tick_dur">
+                                      <field name="VAR" id="tick_duration">tick_duration</field>
+                                      <value name="VALUE">
+                                        <block type="math_number" id="tick_val">
+                                          <field name="NUM">1</field>
+                                        </block>
+                                      </value>
+                                    </block>
+                                    <next>
+                                      <block type="variables_set" id="init_triggers">
+                                        <field name="VAR" id="trigger_digits">trigger_digits</field>
+                                        <value name="VALUE">
+                                          <block type="text" id="trigger_text">
+                                            <field name="TEXT">8,9</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                      <next>
+                                        <block type="variables_set" id="init_type1_contract">
+                                          <field name="VAR" id="type1_contract">type1_contract</field>
+                                          <value name="VALUE">
+                                            <block type="text" id="type1_text">
+                                              <field name="TEXT">DIGITEVEN</field>
+                                            </block>
+                                          </value>
+                                        </block>
+                                        <next>
+                                          <block type="variables_set" id="init_type1_pred">
+                                            <field name="VAR" id="type1_prediction">type1_prediction</field>
+                                            <value name="VALUE">
+                                              <block type="math_number" id="type1_pred_val">
+                                                <field name="NUM">0</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                          <next>
+                                            <block type="variables_set" id="init_type2_contract">
+                                              <field name="VAR" id="type2_contract">type2_contract</field>
+                                              <value name="VALUE">
+                                                <block type="text" id="type2_text">
+                                                  <field name="TEXT">DIGITUNDER</field>
+                                                </block>
+                                              </value>
+                                            </block>
+                                            <next>
+                                              <block type="variables_set" id="init_type2_pred">
+                                                <field name="VAR" id="type2_prediction">type2_prediction</field>
+                                                <value name="VALUE">
+                                                  <block type="math_number" id="type2_pred_val">
+                                                    <field name="NUM">5</field>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </next>
+                                          </next>
+                                        </next>
+                                      </next>
+                                    </next>
+                                  </next>
+                                </next>
+                              </block>
+                            </next>
+                          </next>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+
+  <!-- SUBMARKET: Trigger detection and trade execution -->
+  <block type="submarket" id="dual_submarket" x="0" y="400">
+    <statement name="SUBMARKET_STACK">
+      <block type="controls_if" id="dual_trigger_check">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+
+        <!-- Check if we are in recovery mode -->
+        <value name="IF0">
+          <block type="logic_compare" id="dual_check_recovery">
+            <field name="OP">EQ</field>
+            <value name="A">
+              <block type="variables_get" id="dual_get_recovery">
+                <field name="VAR" id="recovery_mode">recovery_mode</field>
+              </block>
+            </value>
+            <value name="B">
+              <block type="logic_boolean" id="dual_recovery_true">
+                <field name="BOOL">TRUE</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <!-- IN RECOVERY MODE: Fire Type 2 trade on EVERY tick -->
+          <block type="controls_if" id="dual_recovery_lock_check">
+            <value name="IF0">
+              <block type="logic_compare" id="dual_check_lock">
+                <field name="OP">EQ</field>
+                <value name="A">
+                  <block type="variables_get" id="dual_get_lock">
+                    <field name="VAR" id="trade_locked">trade_locked</field>
+                  </block>
+                </value>
+                <value name="B">
+                  <block type="logic_boolean" id="dual_lock_false">
+                    <field name="BOOL">FALSE</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="DO0">
+              <!-- Set trade locked to prevent multiple trades -->
+              <block type="variables_set" id="dual_set_lock">
+                <field name="VAR" id="trade_locked">trade_locked</field>
+                <value name="VALUE">
+                  <block type="logic_boolean" id="dual_lock_true">
+                    <field name="BOOL">TRUE</field>
+                  </block>
+                </value>
+              </block>
+              <next>
+                <!-- Execute Type 2 Recovery Trade -->
+                <block type="trade_definition_tradeoptions" id="dual_recovery_trade">
+                  <mutation xmlns="http://www.w3.org/1999/xhtml" has_first_barrier="true" has_second_barrier="false" has_prediction="false"></mutation>
+                  <field name="DURATIONTYPE_LIST">t</field>
+                  <value name="DURATION">
+                    <shadow type="math_number_positive" id="dual_recovery_dur">
+                      <field name="NUM">1</field>
+                    </shadow>
+                    <block type="variables_get" id="dual_get_dur">
+                      <field name="VAR" id="tick_duration">tick_duration</field>
+                    </block>
+                  </value>
+                  <value name="AMOUNT">
+                    <shadow type="math_number_positive" id="dual_recovery_amt">
+                      <field name="NUM">0.35</field>
+                    </shadow>
+                    <block type="variables_get" id="dual_get_stake">
+                      <field name="VAR" id="stake">stake</field>
+                    </block>
+                  </value>
+                  <value name="FIRST_BARRIER">
+                    <shadow type="math_number_positive" id="dual_recovery_barrier">
+                      <field name="NUM">5</field>
+                    </shadow>
+                    <block type="variables_get" id="dual_get_pred">
+                      <field name="VAR" id="type2_prediction">type2_prediction</field>
+                    </block>
+                  </value>
+                </block>
+              </next>
+            </statement>
+          </block>
+        </statement>
+
+        <!-- NOT IN RECOVERY MODE: Watch for trigger digits -->
+        <statement name="ELSE">
+          <block type="controls_if" id="dual_trigger_watch">
+            <value name="IF0">
+              <block type="text_contains" id="dual_check_trigger">
+                <value name="VALUE">
+                  <block type="last_digit" id="dual_last_digit"></block>
+                </value>
+                <value name="SUB">
+                  <block type="variables_get" id="dual_get_triggers">
+                    <field name="VAR" id="trigger_digits">trigger_digits</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="DO0">
+              <!-- Trigger digit detected! Enter recovery mode -->
+              <block type="variables_set" id="dual_enter_recovery">
+                <field name="VAR" id="recovery_mode">recovery_mode</field>
+                <value name="VALUE">
+                  <block type="logic_boolean" id="dual_recovery_enter">
+                    <field name="BOOL">TRUE</field>
+                  </block>
+                </value>
+              </block>
+              <next>
+                <!-- Set trade locked -->
+                <block type="variables_set" id="dual_lock_trigger">
+                  <field name="VAR" id="trade_locked">trade_locked</field>
+                  <value name="VALUE">
+                    <block type="logic_boolean" id="dual_lock_trigger_true">
+                      <field name="BOOL">TRUE</field>
+                    </block>
+                  </value>
+                </block>
+                <next>
+                  <!-- Execute Type 1 Trigger Trade -->
+                  <block type="trade_definition_tradeoptions" id="dual_trigger_trade">
+                    <mutation xmlns="http://www.w3.org/1999/xhtml" has_first_barrier="true" has_second_barrier="false" has_prediction="false"></mutation>
+                    <field name="DURATIONTYPE_LIST">t</field>
+                    <value name="DURATION">
+                      <shadow type="math_number_positive" id="dual_trigger_dur">
+                        <field name="NUM">1</field>
+                      </shadow>
+                      <block type="variables_get" id="dual_get_dur_trigger">
+                        <field name="VAR" id="tick_duration">tick_duration</field>
+                      </block>
+                    </value>
+                    <value name="AMOUNT">
+                      <shadow type="math_number_positive" id="dual_trigger_amt">
+                        <field name="NUM">0.35</field>
+                      </shadow>
+                      <block type="variables_get" id="dual_get_stake_trigger">
+                        <field name="VAR" id="base_stake">base_stake</field>
+                      </block>
+                    </value>
+                    <value name="FIRST_BARRIER">
+                      <shadow type="math_number_positive" id="dual_trigger_barrier">
+                        <field name="NUM">0</field>
+                      </shadow>
+                      <block type="variables_get" id="dual_get_pred_trigger">
+                        <field name="VAR" id="type1_prediction">type1_prediction</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </next>
+            </statement>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+
+  <!-- BEFORE PURCHASE - Set contract type and prediction based on mode -->
+  <block type="before_purchase" id="dual_before" deletable="false" x="0" y="700">
+    <statement name="BEFOREPURCHASE_STACK">
+      <block type="controls_if" id="dual_before_if">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+
+        <!-- Check if in recovery mode -->
+        <value name="IF0">
+          <block type="logic_compare" id="dual_before_recovery_check">
+            <field name="OP">EQ</field>
+            <value name="A">
+              <block type="variables_get" id="dual_before_get_recovery">
+                <field name="VAR" id="recovery_mode">recovery_mode</field>
+              </block>
+            </value>
+            <value name="B">
+              <block type="logic_boolean" id="dual_before_recovery_true">
+                <field name="BOOL">TRUE</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <!-- Recovery Mode: Use Type 2 Contract -->
+          <block type="controls_if" id="dual_before_type2_check">
+            <value name="IF0">
+              <block type="text_compare" id="dual_before_type2_contract">
+                <field name="OP">EQ</field>
+                <value name="A">
+                  <block type="variables_get" id="dual_before_get_type2_contract">
+                    <field name="VAR" id="type2_contract">type2_contract</field>
+                  </block>
+                </value>
+                <value name="B">
+                  <block type="text" id="dual_before_type2_text">
+                    <field name="TEXT">DIGITUNDER</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="purchase" id="dual_buy_under">
+                <field name="PURCHASE_LIST">DIGITUNDER</field>
+              </block>
+            </statement>
+            <statement name="ELSE">
+              <block type="purchase" id="dual_buy_type2_other">
+                <field name="PURCHASE_LIST">DIGITOVER</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
+
+        <!-- Normal Mode: Use Type 1 Contract -->
+        <statement name="ELSE">
+          <block type="controls_if" id="dual_before_type1_check">
+            <value name="IF0">
+              <block type="text_compare" id="dual_before_type1_contract">
+                <field name="OP">EQ</field>
+                <value name="A">
+                  <block type="variables_get" id="dual_before_get_type1_contract">
+                    <field name="VAR" id="type1_contract">type1_contract</field>
+                  </block>
+                </value>
+                <value name="B">
+                  <block type="text" id="dual_before_type1_text">
+                    <field name="TEXT">DIGITEVEN</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="purchase" id="dual_buy_even">
+                <field name="PURCHASE_LIST">DIGITEVEN</field>
+              </block>
+            </statement>
+            <statement name="ELSE">
+              <block type="purchase" id="dual_buy_type1_other">
+                <field name="PURCHASE_LIST">DIGITODD</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+
+  <!-- AFTER PURCHASE - Handle results, exit recovery on win, martingale on loss -->
+  <block type="after_purchase" id="dual_after" x="400" y="700">
+    <statement name="AFTERPURCHASE_STACK">
+      <block type="controls_if" id="dual_after_if">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" elseif="1" else="1"></mutation>
+
+        <!-- Take Profit Check -->
+        <value name="IF0">
+          <block type="logic_compare" id="dual_tp_check">
+            <field name="OP">GTE</field>
+            <value name="A">
+              <block type="total_profit" id="dual_total_profit"></block>
+            </value>
+            <value name="B">
+              <block type="variables_get" id="dual_tp_target">
+                <field name="VAR" id="tp_target">tp_target</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="text_print" id="dual_tp_msg">
+            <value name="TEXT">
+              <shadow type="text" id="dual_tp_text">
+                <field name="TEXT">🎯 Take Profit Reached! Dual Bot Complete.</field>
+              </shadow>
+            </value>
+          </block>
+        </statement>
+
+        <!-- Stop Loss Check -->
+        <value name="IF1">
+          <block type="logic_compare" id="dual_sl_check">
+            <field name="OP">LTE</field>
+            <value name="A">
+              <block type="total_profit" id="dual_total_profit2"></block>
+            </value>
+            <value name="B">
+              <block type="math_single" id="dual_sl_neg">
+                <field name="OP">NEG</field>
+                <value name="NUM">
+                  <block type="variables_get" id="dual_sl_target">
+                    <field name="VAR" id="sl_target">sl_target</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO1">
+          <block type="text_print" id="dual_sl_msg">
+            <value name="TEXT">
+              <shadow type="text" id="dual_sl_text">
+                <field name="TEXT">🛑 Stop Loss Hit. Dual Bot Stopped.</field>
+              </shadow>
+            </value>
+          </block>
+        </statement>
+
+        <!-- Process Trade Result -->
+        <statement name="ELSE">
+          <block type="controls_if" id="dual_result_if">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+
+            <!-- WIN -->
+            <value name="IF0">
+              <block type="contract_check_result" id="dual_win_check">
+                <field name="CHECK_RESULT">win</field>
+              </block>
+            </value>
+            <statement name="DO0">
+              <!-- Exit recovery mode -->
+              <block type="variables_set" id="dual_exit_recovery">
+                <field name="VAR" id="recovery_mode">recovery_mode</field>
+                <value name="VALUE">
+                  <block type="logic_boolean" id="dual_recovery_false">
+                    <field name="BOOL">FALSE</field>
+                  </block>
+                </value>
+              </block>
+              <next>
+                <!-- Reset stake to base -->
+                <block type="variables_set" id="dual_reset_stake">
+                  <field name="VAR" id="stake">stake</field>
+                  <value name="VALUE">
+                    <block type="variables_get" id="dual_base_stake">
+                      <field name="VAR" id="base_stake">base_stake</field>
+                    </block>
+                  </value>
+                </block>
+                <next>
+                  <!-- Reset martingale counter -->
+                  <block type="variables_set" id="dual_reset_mart">
+                    <field name="VAR" id="martingale_counter">martingale_counter</field>
+                    <value name="VALUE">
+                      <block type="math_number" id="dual_mart_zero">
+                        <field name="NUM">0</field>
+                      </block>
+                    </value>
+                  </block>
+                  <next>
+                    <!-- Unlock trade -->
+                    <block type="variables_set" id="dual_unlock">
+                      <field name="VAR" id="trade_locked">trade_locked</field>
+                      <value name="VALUE">
+                        <block type="logic_boolean" id="dual_unlock_false">
+                          <field name="BOOL">FALSE</field>
+                        </block>
+                      </value>
+                    </block>
+                    <next>
+                      <block type="trade_again" id="dual_trade_again_win"></block>
+                    </next>
+                  </next>
+                </next>
+              </next>
+            </statement>
+
+            <!-- LOSS -->
+            <statement name="ELSE">
+              <block type="controls_if" id="dual_mart_check">
+                <value name="IF0">
+                  <block type="logic_compare" id="dual_mart_limit_check">
+                    <field name="OP">LT</field>
+                    <value name="A">
+                      <block type="variables_get" id="dual_get_mart_counter">
+                        <field name="VAR" id="martingale_counter">martingale_counter</field>
+                      </block>
+                    </value>
+                    <value name="B">
+                      <block type="variables_get" id="dual_get_mart_limit">
+                        <field name="VAR" id="martingale_limit">martingale_limit</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <statement name="DO0">
+                  <!-- Increment martingale counter -->
+                  <block type="math_change" id="dual_inc_mart">
+                    <field name="VAR" id="martingale_counter">martingale_counter</field>
+                    <value name="DELTA">
+                      <shadow type="math_number" id="dual_inc_one">
+                        <field name="NUM">1</field>
+                      </shadow>
+                    </value>
+                  </block>
+                  <next>
+                    <!-- Calculate new stake = current stake × martingale -->
+                    <block type="variables_set" id="dual_calc_stake">
+                      <field name="VAR" id="stake">stake</field>
+                      <value name="VALUE">
+                        <block type="math_arithmetic" id="dual_multiply">
+                          <field name="OP">MULTIPLY</field>
+                          <value name="A">
+                            <block type="variables_get" id="dual_current_stake">
+                              <field name="VAR" id="stake">stake</field>
+                            </block>
+                          </value>
+                          <value name="B">
+                            <block type="variables_get" id="dual_mart_val">
+                              <field name="VAR" id="martingale">martingale</field>
+                            </block>
+                          </value>
+                        </block>
+                      </value>
+                    </block>
+                  </next>
+                </statement>
+                <statement name="ELSE">
+                  <!-- Martingale limit reached, reset stake -->
+                  <block type="variables_set" id="dual_reset_stake_limit">
+                    <field name="VAR" id="stake">stake</field>
+                    <value name="VALUE">
+                      <block type="variables_get" id="dual_base_stake_limit">
+                        <field name="VAR" id="base_stake">base_stake</field>
+                      </block>
+                    </value>
+                  </block>
+                  <next>
+                    <block type="variables_set" id="dual_reset_mart_limit">
+                      <field name="VAR" id="martingale_counter">martingale_counter</field>
+                      <value name="VALUE">
+                        <block type="math_number" id="dual_mart_reset">
+                          <field name="NUM">0</field>
+                        </block>
+                      </value>
+                    </block>
+                  </next>
+                </statement>
+                <next>
+                  <!-- Unlock trade for next attempt -->
+                  <block type="variables_set" id="dual_unlock_loss">
+                    <field name="VAR" id="trade_locked">trade_locked</field>
+                    <value name="VALUE">
+                      <block type="logic_boolean" id="dual_unlock_false_loss">
+                        <field name="BOOL">FALSE</field>
+                      </block>
+                    </value>
+                  </block>
+                  <next>
+                    <block type="trade_again" id="dual_trade_again_loss"></block>
+                  </next>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+</xml>

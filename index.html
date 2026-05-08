@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    
+    <!-- Google Site Verification -->
+    <meta name="google-site-verification" content="Tb1I-7QKPlLUd8i_IvmPBCBjDEl_xgCeCZF9pw3xE3A" />
+    
+    <!-- SEO Meta Tags - Optimized for Google -->
+    <title>NyanyukiSite | AI-Powered Trading Platform | Smart Automation</title>
+    <meta name="description" content="NyanyukiSite offers institutional-grade automated trading with AI algorithms, real-time market data, and lightning execution. Trusted by smart traders worldwide." />
+    <meta name="keywords" content="NyanyukiSite, automated trading, AI trading bots, forex trading, crypto trading, smart trading platform, algorithmic trading" />
+    <meta name="author" content="NyanyukiSite" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+    <meta name="googlebot" content="index, follow" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nyanyuki.site/" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="NyanyukiSite - AI-Powered Automated Trading" />
+    <meta property="og:description" content="Trade smarter with AI algorithms, real-time execution, and institutional-grade security." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nyanyuki.site/" />
+    <meta property="og:site_name" content="NyanyukiSite" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="NyanyukiSite - Smart Trading Automation" />
+    <meta name="twitter:description" content="AI-powered trading platform for modern investors." />
+    
+    <!-- Icons -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" href="./nyanyuki-logo.png" />
+    <link rel="apple-touch-icon" href="./nyanyuki-logo.png" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary:        #e26906;
+            --primary-dark:   #cc5a00;
+            --primary-glow:   rgba(226, 105, 6, 0.3);
+            --accent:         #ffb347;
+            --accent-glow:    rgba(255, 180, 71, 0.2);
+            --gold:           #FFD700;
+            --gold-glow:      rgba(255, 215, 0, 0.25);
+            --dark-bg:        #07090e;
+            --card-bg:        rgba(14, 17, 24, 0.96);
+            --surface:        #151923;
+            --surface-hi:     #1C2230;
+            --text-primary:   #F0F4FF;
+            --text-secondary: #8896AE;
+            --text-muted:     #4A5568;
+            --border:         rgba(255,255,255,0.07);
+            --border-hi:      rgba(226, 105, 6, 0.4);
+            --success:        #FFD700;
+            --radius-sm:      8px;
+            --radius-md:      16px;
+            --radius-lg:      24px;
+            --radius-xl:      32px;
+        }
+
+        html { font-size: 62.5%; scroll-behavior: smooth; }
+
+        body {
+            background: var(--dark-bg);
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--text-primary);
+        }
+
+        /* Premium Mesh Background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 15% 40%, rgba(226,105,6,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 85% 75%, rgba(255,215,0,0.08) 0%, transparent 55%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Dollar Rain Animation */
+        .dollar-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .dollar {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0;
+            animation: dollarFall linear forwards;
+            pointer-events: none;
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.4));
+        }
+
+        @keyframes dollarFall {
+            0% { transform: translateY(-20vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(120vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Splash Screen */
+        #nyanyuki-splash {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            padding: 20px;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s 0.7s;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .orb-1 { width: 450px; height: 450px; background: var(--primary-glow); top: -100px; left: -80px; animation: orbDrift 12s infinite alternate; }
+        .orb-2 { width: 350px; height: 350px; background: var(--gold-glow); bottom: -80px; right: -60px; animation: orbDrift 15s infinite alternate-reverse; }
+        .orb-3 { width: 250px; height: 250px; background: var(--accent-glow); top: 50%; left: 50%; transform: translate(-50%, -50%); animation: orbPulse 8s infinite; }
+
+        .splash-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 540px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 48px 44px 44px;
+            box-shadow: 0 0 0 1px var(--border), 0 32px 64px -16px rgba(0,0,0,0.7), 0 0 100px -20px var(--primary-glow);
+            animation: cardReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .splash-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 60%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--gold), transparent);
+            border-radius: 0 0 4px 4px;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 36px;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px -4px var(--primary-glow);
+            animation: float 4s ease-in-out infinite;
+        }
+        .logo-icon .n-letter { font-family: 'Syne', sans-serif; font-size: 3.2rem; font-weight: 800; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.3); letter-spacing: -2px; }
+
+        .logo-text-group { text-align: left; }
+        .splash-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            background: linear-gradient(135deg, #FFFFFF 20%, var(--gold) 60%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .splash-subtitle { font-size: 1.15rem; color: var(--text-secondary); margin-top: 6px; }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-hi), var(--gold-glow), transparent);
+            margin: 0 0 32px;
+        }
+
+        .loader-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .ring-wrap {
+            width: 48px; height: 48px;
+            position: relative;
+        }
+        .ring-wrap::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2.5px solid rgba(226,105,6,0.2);
+            border-top-color: var(--primary);
+            border-right-color: var(--gold);
+            border-radius: 50%;
+            animation: rotation 0.9s linear infinite;
+        }
+        .ring-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 2px solid rgba(255,215,0,0.2);
+            border-bottom-color: var(--gold);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            animation: rotationReverse 0.6s linear infinite;
+        }
+
+        .loader-label { font-size: 1.3rem; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.02em; }
+
+        .loading-section-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .loading-items {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 20px;
+            margin-bottom: 32px;
+            list-style: none;
+        }
+        .loading-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+        .loading-item .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+        .loading-item.active { color: var(--text-primary); opacity: 1; font-weight: 600; }
+        .loading-item.active .dot { background: var(--gold); box-shadow: 0 0 12px var(--gold); animation: pulse 1s infinite; }
+        .loading-item.completed { color: var(--gold); opacity: 0.9; }
+        .loading-item.completed .dot { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+
+        .progress-wrap {
+            height: 6px;
+            background: var(--surface-hi);
+            border-radius: 99px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--gold));
+            transition: width 0.2s linear;
+        }
+
+        .percentage-counter { text-align: center; margin-bottom: 24px; }
+        .percentage-number { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; background: linear-gradient(135deg, var(--gold), var(--primary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
+        .percentage-label { font-size: 1.2rem; color: var(--text-secondary); margin-left: 4px; }
+        .percentage-status { font-size: 1.2rem; color: var(--gold); margin-top: 8px; font-weight: 500; letter-spacing: 0.5px; }
+
+        .welcome-message {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 99px;
+            padding: 10px 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--gold);
+            width: fit-content;
+            margin: 10px auto 0;
+        }
+
+        .splash-fade-out { opacity: 0; visibility: hidden; }
+
+        #root {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s ease;
+            position: relative;
+            z-index: 2;
+        }
+        #root.visible { opacity: 1; visibility: visible; }
+
+        /* Main Dashboard - Professional */
+        .dashboard {
+            min-height: 100vh;
+            padding: 80px 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .hero { text-align: center; margin-bottom: 70px; }
+        .hero h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, var(--gold) 50%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+        }
+        .hero p { font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--text-secondary); max-width: 750px; margin: 0 auto; }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
+            margin-top: 50px;
+        }
+        .feature-card {
+            background: rgba(14, 17, 24, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover { border-color: var(--border-hi); transform: translateY(-8px); box-shadow: 0 20px 40px -12px var(--primary-glow); }
+        .feature-card h3 { font-size: 2rem; margin-bottom: 15px; background: linear-gradient(135deg, var(--primary), var(--gold)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .feature-card p { font-size: 1.4rem; color: var(--text-secondary); line-height: 1.5; }
+
+        @keyframes cardReveal { from { opacity: 0; transform: translateY(30px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes rotation { to { transform: rotate(360deg); } }
+        @keyframes rotationReverse { to { transform: rotate(-360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+        @keyframes orbDrift { from { transform: translate(0, 0); } to { transform: translate(50px, 40px); } }
+        @keyframes orbPulse { 0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.2); } }
+
+        @media (max-width: 640px) {
+            .splash-card { padding: 36px 28px 32px; }
+            .splash-title { font-size: 1.9rem; }
+            .loading-items { grid-template-columns: 1fr; gap: 8px; }
+            .logo-icon { width: 50px; height: 50px; }
+            .logo-icon .n-letter { font-size: 2.5rem; }
+            .percentage-number { font-size: 2.4rem; }
+            .dashboard { padding: 50px 16px; }
+            .feature-card { padding: 24px; }
+        }
+        @media (min-width: 1400px) {
+            .splash-card { max-width: 560px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particle-canvas"></canvas>
+    <div class="dollar-rain" id="dollarRain"></div>
+
+    <div id="nyanyuki-splash">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="splash-card">
+            <div class="logo-wrap">
+                <div class="logo-icon"><span class="n-letter">N</span></div>
+                <div class="logo-text-group">
+                    <div class="splash-title">NYANYUKISITE</div>
+                    <div class="splash-subtitle">The ultimate of smart traders</div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="loader-row">
+                <div class="ring-wrap"></div>
+                <span class="loader-label">Synchronizing AI Trading Engine...</span>
+            </div>
+            <div class="loading-section-label">Loading Core Modules</div>
+            <ul class="loading-items">
+                <li class="loading-item" id="item1"><span class="dot"></span>Trading Engine</li>
+                <li class="loading-item" id="item2"><span class="dot"></span>Market Data Feed</li>
+                <li class="loading-item" id="item3"><span class="dot"></span>AI Trading Bots</li>
+                <li class="loading-item" id="item4"><span class="dot"></span>Advanced Charts</li>
+                <li class="loading-item" id="item5"><span class="dot"></span>Secure Gateway</li>
+                <li class="loading-item" id="item6"><span class="dot"></span>Finalizing Setup</li>
+            </ul>
+            <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+            <div class="percentage-counter">
+                <span class="percentage-number" id="percentageNumber">0</span><span class="percentage-label">%</span>
+                <div class="percentage-status" id="percentageStatus">Initializing engine...</div>
+            </div>
+            <div class="welcome-message" id="welcomeMessage">
+                <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.5" stroke="#FFD700" stroke-width="1.2"/><path d="M4.5 7L6.2 8.8L9.5 5.5" stroke="#FFD700" stroke-width="1.4" stroke-linecap="round"/></svg>
+                System Ready — Welcome to NyanyukiSite Elite
+            </div>
+        </div>
+    </div>
+
+    <div id="root">
+        <div class="dashboard">
+            <div class="hero">
+                <h1>Trade With The Best Automation</h1>
+                <p>Experience next‑gen automated trading with AI algorithms, real‑time execution, and institutional‑grade security.</p>
+            </div>
+            <div class="features">
+                <div class="feature-card"><h3>⚡ Lightning Speed</h3><p>Sub‑millisecond execution with proprietary low‑latency engine.</p></div>
+                <div class="feature-card"><h3>🤖 AI‑Powered</h3><p>Machine learning adapts to market conditions in real time.</p></div>
+                <div class="feature-card"><h3>🔒 Bank‑Grade Security</h3><p>Military‑grade encryption & multi‑layer protection.</p></div>
+                <div class="feature-card"><h3>📊 Real‑Time Analytics</h3><p>Live charts, order flow & institutional dashboards.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // DOLLAR RAIN (stops on complete)
+            let dollarInterval = null;
+            const dollarContainer = document.getElementById('dollarRain');
+            const symbols = ['💵', '💰', '💸', '🤑', '$', '💎', '📈', '💹'];
+            function createDollar() {
+                if (!dollarContainer) return;
+                const d = document.createElement('div');
+                d.className = 'dollar';
+                d.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                d.style.left = Math.random() * 100 + '%';
+                d.style.fontSize = (Math.random() * 2 + 1.6) + 'rem';
+                d.style.animationDuration = (Math.random() * 2.5 + 2.5) + 's';
+                d.style.animationDelay = Math.random() * 4 + 's';
+                d.style.opacity = Math.random() * 0.5 + 0.3;
+                dollarContainer.appendChild(d);
+                setTimeout(() => d.remove(), 5000);
+            }
+            function startDollarRain() {
+                if (dollarInterval) clearInterval(dollarInterval);
+                for(let i=0;i<12;i++) setTimeout(createDollar, i*180);
+                dollarInterval = setInterval(createDollar, 280);
+            }
+            function stopDollarRain() {
+                if(dollarInterval) { clearInterval(dollarInterval); dollarInterval = null; }
+                if(dollarContainer) dollarContainer.innerHTML = '';
+            }
+            startDollarRain();
+
+            // PARTICLE SYSTEM
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [], animId;
+            function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            function initParticles() {
+                particles = [];
+                const n = Math.min(65, Math.floor(window.innerWidth / 22));
+                for(let i=0;i<n;i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                        r: Math.random() * 1.4 + 0.4,
+                        vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.2,
+                        a: Math.random() * 0.18 + 0.05,
+                        hue: Math.random() > 0.5 ? '226,105,6' : '255,215,0'
+                    });
+                }
+            }
+            function drawParticles() {
+                if(!ctx) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for(let p of particles) {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                    ctx.fillStyle = `rgba(${p.hue}, ${p.a})`;
+                    ctx.fill();
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.x < 0) p.x = canvas.width;
+                    if(p.x > canvas.width) p.x = 0;
+                    if(p.y < 0) p.y = canvas.height;
+                    if(p.y > canvas.height) p.y = 0;
+                }
+                animId = requestAnimationFrame(drawParticles);
+            }
+            window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+            resizeCanvas(); initParticles(); drawParticles();
+            window.addEventListener('beforeunload', () => { if(animId) cancelAnimationFrame(animId); });
+
+            // ========== 15‑SECOND LOADING WITH PERCENTAGE ==========
+            const splash = document.getElementById('nyanyuki-splash');
+            const progressBar = document.getElementById('progressBar');
+            const welcomeMsgDiv = document.getElementById('welcomeMessage');
+            const rootDiv = document.getElementById('root');
+            const items = document.querySelectorAll('.loading-item');
+            const percentageSpan = document.getElementById('percentageNumber');
+            const statusSpan = document.getElementById('percentageStatus');
+
+            const TOTAL_MS = 15000;          // 15 seconds
+            const UPDATE_INTERVAL = 80;       // smooth 80ms steps (~187 updates)
+            let elapsed = 0;
+            let timer = null;
+
+            const statusSteps = [
+                { limit: 12, text: "Booting Trading Engine..." },
+                { limit: 25, text: "Loading live market feeds..." },
+                { limit: 38, text: "Initializing AI algorithms..." },
+                { limit: 52, text: "Establishing secure API..." },
+                { limit: 68, text: "Rendering advanced charts..." },
+                { limit: 82, text: "Optimizing low-latency routes..." },
+                { limit: 95, text: "Final security checks..." },
+                { limit: 100, text: "COMPLETE — Ready to trade" }
+            ];
+
+            function updateUI(percent) {
+                // Progress bar width
+                progressBar.style.width = percent + '%';
+                percentageSpan.textContent = Math.floor(percent);
+
+                // dynamic status message
+                for(let s of statusSteps) {
+                    if(percent <= s.limit) {
+                        statusSpan.textContent = s.text;
+                        break;
+                    }
+                }
+
+                // update checklist items (6 items)
+                const activeIndex = Math.min(items.length-1, Math.floor((percent / 100) * items.length));
+                for(let i=0; i<items.length; i++) {
+                    if(i < activeIndex) {
+                        items[i].classList.add('completed');
+                        items[i].classList.remove('active');
+                    } else if(i === activeIndex) {
+                        items[i].classList.add('active');
+                        items[i].classList.remove('completed');
+                    } else {
+                        items[i].classList.remove('active', 'completed');
+                    }
+                }
+                // when 100%, mark all as completed
+                if(percent >= 99.5) {
+                    for(let i=0;i<items.length;i++) {
+                        items[i].classList.remove('active');
+                        items[i].classList.add('completed');
+                    }
+                    statusSpan.textContent = "✓ COMPLETE! Launching dashboard...";
+                }
+            }
+
+            function finishLoading() {
+                if(timer) clearInterval(timer);
+                // final 100%
+                updateUI(100);
+                // show welcome badge
+                welcomeMsgDiv.style.display = 'flex';
+                // stop dollar rain
+                stopDollarRain();
+                // fade splash, show main content
+                setTimeout(() => {
+                    splash.classList.add('splash-fade-out');
+                    setTimeout(() => {
+                        if(splash) splash.remove();
+                        rootDiv.classList.add('visible');
+                        const canvasEl = document.getElementById('particle-canvas');
+                        if(canvasEl) canvasEl.style.opacity = '0.15';
+                    }, 700);
+                }, 500);
+            }
+
+            function startLoading() {
+                const startTime = performance.now();
+                timer = setInterval(() => {
+                    const now = performance.now();
+                    elapsed = now - startTime;
+                    let percent = (elapsed / TOTAL_MS) * 100;
+                    if(percent >= 100) {
+                        percent = 100;
+                        updateUI(100);
+                        clearInterval(timer);
+                        finishLoading();
+                    } else {
+                        updateUI(percent);
+                    }
+                }, UPDATE_INTERVAL);
+                // safety: force finish after 15.5s
+                setTimeout(() => {
+                    if(percentageSpan.textContent != '100') finishLoading();
+                }, TOTAL_MS + 300);
+            }
+
+            // slight delay for smoother entrance
+            setTimeout(startLoading, 200);
+        })();
+    </script>
+</body>
+</html>
