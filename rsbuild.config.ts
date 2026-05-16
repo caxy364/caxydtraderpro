@@ -20,7 +20,7 @@ export default defineConfig({
         },
         define: {
             'process.env': {
-                DERIV_APP_ID: JSON.stringify('117013'), // ✅ Hardcoded your App ID
+                DERIV_APP_ID: JSON.stringify('117013'),
                 TRANSLATIONS_CDN_URL: JSON.stringify(process.env.TRANSLATIONS_CDN_URL || ''),
                 R2_PROJECT_NAME: JSON.stringify(process.env.R2_PROJECT_NAME || ''),
                 CROWDIN_BRANCH_NAME: JSON.stringify(process.env.CROWDIN_BRANCH_NAME || ''),
@@ -70,12 +70,17 @@ export default defineConfig({
         template: './index.html',
     },
     server: {
-        port: 3000,
+        port: 5000,
+        host: '0.0.0.0',
         compress: true,
         https: false,
     },
     dev: {
         hmr: true,
+        client: {
+            host: '0.0.0.0',
+            port: 5000,
+        },
     },
     tools: {
         rspack: {

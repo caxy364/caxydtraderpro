@@ -23,8 +23,8 @@ const Chart = lazy(() => import('../chart'));
 const Tutorial = lazy(() => import('../tutorials'));
 
 // These files need to be created in the same directory
-const NyanyukiPro = lazy(() => import('./NyanyukiPro'));
-const DigitCircleTool = lazy(() => import('./DigitCircleTool'));
+const NyanyukiPro = lazy(() => import('./Nyanyukipro'));
+const DigitCircleTool = lazy(() => import('./Digitcircletool'));
 
 // Helper to check if user is using OAuth
 const isOAuthUser = (): boolean => {
