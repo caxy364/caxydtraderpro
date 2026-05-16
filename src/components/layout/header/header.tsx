@@ -1,5 +1,6 @@
 // src/components/layout/header/header.tsx
 
+import { DERIV_APP_ID } from '@/constants/deriv-app-config';
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
@@ -27,7 +28,7 @@ const useHeaderBalance = () => {
         
         const connectWebSocket = () => {
             // Use the Deriv WebSocket endpoint
-            ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=101761');
+            ws = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${DERIV_APP_ID}`);
             
             ws.onopen = () => {
                 console.log('[Balance WebSocket] Connected');
@@ -303,7 +304,7 @@ const AppHeader = observer(() => {
     };
 
     const handleLegacyLogin = () => {
-        window.location.replace('https://oauth.deriv.com/oauth2/authorize?app_id=101761&l=EN&brand=nyanyukisites');
+        window.location.replace(`https://oauth.deriv.com/oauth2/authorize?app_id=${DERIV_APP_ID}&l=EN&brand=nyanyukisites`);
     };
 
     const handleSecureOAuthLogin = async () => {

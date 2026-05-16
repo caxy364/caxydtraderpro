@@ -1,6 +1,7 @@
 
 // --- NYANYUKI PRO COMPONENT (YOUR EXISTING CODE - PUT YOUR FULL CODE HERE) ---im
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { DERIV_APP_ID } from '@/constants/deriv-app-config';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '@/hooks/useStore';
 import { api_base } from '@/external/bot-skeleton';
@@ -3701,7 +3702,7 @@ const NyanyukiPro = observer(() => {
 
         SCANNER_SYMBOLS.forEach(sym => {
             try {
-                const ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=101761');
+                const ws = new WebSocket(`wss://ws.binaryws.com/websockets/v3?app_id=${DERIV_APP_ID}`);
                 scannerWsMap.current[sym] = ws;
 
                 ws.onopen = () => {
@@ -3726,7 +3727,7 @@ const NyanyukiPro = observer(() => {
                     if (isBotRunningRef.current && modeRef.current === 'SCANNER') {
                         setTimeout(() => {
                             if (isBotRunningRef.current && modeRef.current === 'SCANNER') {
-                                const newWs = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=101761');
+                                const newWs = new WebSocket(`wss://ws.binaryws.com/websockets/v3?app_id=${DERIV_APP_ID}`);
                                 scannerWsMap.current[sym] = newWs;
                                 newWs.onopen = () => newWs.send(JSON.stringify({ ticks: sym, subscribe: 1 }));
                                 newWs.onmessage = ws.onmessage;
@@ -3808,7 +3809,7 @@ const NyanyukiPro = observer(() => {
             }
         }
 
-        const ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=101761');
+        const ws = new WebSocket(`wss://ws.binaryws.com/websockets/v3?app_id=${DERIV_APP_ID}`);
         publicWs.current = ws;
         
         let heartbeatInterval = null;

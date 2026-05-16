@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { DERIV_APP_ID } from '@/constants/deriv-app-config';
 
 // Fix 4: tradeLogs ref to prevent re-renders
 const DigitCircleTool = () => {
@@ -152,7 +153,7 @@ const DigitCircleTool = () => {
     // --- WEBSOCKET CONNECTION (Fix 3: Will be shared via context in production) ---
     useEffect(() => {
         setIsLoading(true);
-        ws.current = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
+        ws.current = new WebSocket(`wss://ws.binaryws.com/websockets/v3?app_id=${DERIV_APP_ID}`);
         
         ws.current.onopen = () => {
             ws.current.send(JSON.stringify({
