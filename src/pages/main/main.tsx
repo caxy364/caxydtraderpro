@@ -53,9 +53,9 @@ const getAppId = (): string => {
     if (isOAuthUser()) {
         return localStorage.getItem('deriv_app_id') || 
                localStorage.getItem('oauth_client_id') || 
-               '117013';
+               '111670';
     }
-    return '117013';
+    return '111670';
 };
 
 // --- Modern Icons with Gradient Colors ---

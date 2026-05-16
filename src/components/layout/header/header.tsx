@@ -308,8 +308,8 @@ const AppHeader = observer(() => {
     };
 
     const handleSecureOAuthLogin = async () => {
-        const clientId = '3373S5Dny6niTFbyNDipt';
-        const redirectUri = 'https://nyanyukisites.pages.dev/callback';
+        const clientId = '32UpAZvxBqalqEFHVMTNS';
+        const redirectUri = 'https://caxydtraderpro.vercel.app/callback';
         const scope = 'trade account_manage';
 
         const codeVerifier = generateCodeVerifier();

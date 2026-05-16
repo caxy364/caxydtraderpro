@@ -10,7 +10,7 @@ export const DTraderTab = observer(() => {
     const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
     const token = localStorage.getItem('authToken') || accountsList[loginId] || '';
     const currency = client.accounts?.[loginId]?.currency || 'USD';
-    const appId = '117013';
+    const appId = '111670';
 
     const iframeSrc = token
         ? `https://deriv-dtrader.vercel.app/dtrader?acct1=${loginId}&token1=${token}&cur1=${currency}&lang=EN&app_id=${appId}`

@@ -79,7 +79,7 @@ const Layout = () => {
         ) {
             console.log("Redirecting to Nyanyukisites Auth...");
             
-            const MY_APP_ID = '117013';
+            const MY_APP_ID = '111670';
             const BRAND = 'nyanyukisites';
             const REDIRECT_URI = window.location.origin + '/callback';
             

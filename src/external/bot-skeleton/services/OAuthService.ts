@@ -2,7 +2,7 @@
 
 // Your OAuth configuration
 const CLIENT_ID = '32UpAZvxBqalqEFHVMTNS';
-const REDIRECT_URI = 'https://nyanyukisites.pages.dev/callback';
+const REDIRECT_URI = 'https://caxydtraderpro.vercel.app/callback';
 const API_BASE_URL = 'https://api.derivws.com';
 
 // ==================== PKCE Helpers ====================

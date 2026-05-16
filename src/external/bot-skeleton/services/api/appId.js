@@ -6,7 +6,7 @@ import APIMiddleware from './api-middleware';
 
 export const generateDerivApiInstance = () => {
     // Your specific App ID
-    const MY_APP_ID = '117013';
+    const MY_APP_ID = '111670';
     
     // We prioritize your ID, but allow a query param 'app_id' in the URL to override it for testing
     const query_params = new URLSearchParams(window.location.search);
