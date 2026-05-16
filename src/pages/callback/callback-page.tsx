@@ -42,7 +42,7 @@ const CallbackPage: React.FC = () => {
             }
 
             try {
-                const redirectUri = 'https://caxydtraderpro.vercel.app/callback';
+                const redirectUri = window.location.origin + '/callback';
 
                 console.log('[Callback] Exchanging code for token...');
 

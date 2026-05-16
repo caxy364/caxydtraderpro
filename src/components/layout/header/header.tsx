@@ -309,7 +309,7 @@ const AppHeader = observer(() => {
 
     const handleSecureOAuthLogin = async () => {
         const clientId = '32UpAZvxBqalqEFHVMTNS';
-        const redirectUri = 'https://caxydtraderpro.vercel.app/callback';
+        const redirectUri = window.location.origin + '/callback';
         const scope = 'trade account_manage';
 
         const codeVerifier = generateCodeVerifier();
