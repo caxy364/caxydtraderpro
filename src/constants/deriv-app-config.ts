@@ -1,1 +1,1 @@
-export const DERIV_APP_ID = '101761';
+export const DERIV_APP_ID = '111670';

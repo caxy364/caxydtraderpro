@@ -1,7 +1,7 @@
 // src/external/bot-skeleton/services/OAuthService.ts
 
 // Your OAuth configuration
-const CLIENT_ID = '3373S5Dny6niTFbyNDipt';
+const CLIENT_ID = '32UpAZvxBqalqEFHVMTNS';
 const REDIRECT_URI = 'https://nyanyukisites.pages.dev/callback';
 const API_BASE_URL = 'https://api.derivws.com';
 

@@ -20,7 +20,7 @@ export default defineConfig({
         },
         define: {
             'process.env': {
-                DERIV_APP_ID: JSON.stringify('101761'),
+                DERIV_APP_ID: JSON.stringify('111670'),
                 TRANSLATIONS_CDN_URL: JSON.stringify(process.env.TRANSLATIONS_CDN_URL || ''),
                 R2_PROJECT_NAME: JSON.stringify(process.env.R2_PROJECT_NAME || ''),
                 CROWDIN_BRANCH_NAME: JSON.stringify(process.env.CROWDIN_BRANCH_NAME || ''),
