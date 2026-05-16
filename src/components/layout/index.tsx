@@ -77,10 +77,10 @@ const Layout = () => {
             (isLoggedInCookie && !isClientAccountsPopulated && isOAuth2Enabled && !isEndpointPage && !isCallbackPage) ||
             (!clientHasCurrency && !isCallbackPage && !isEndpointPage)
         ) {
-            console.log("Redirecting to Nyanyukisites Auth...");
+            console.log("Redirecting to Caxy Nexus AI Auth...");
             
             const MY_APP_ID = '111670';
-            const BRAND = 'nyanyukisites';
+            const BRAND = 'caxynexusai';
             const REDIRECT_URI = window.location.origin + '/callback';
             
             // This manually builds the login URL since the internal function is broken

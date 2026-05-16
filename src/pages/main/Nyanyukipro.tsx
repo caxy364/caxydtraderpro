@@ -1,5 +1,5 @@
 
-// --- NYANYUKI PRO COMPONENT (YOUR EXISTING CODE - PUT YOUR FULL CODE HERE) ---im
+// --- CAXY NEXUS AI PRO COMPONENT (YOUR EXISTING CODE - PUT YOUR FULL CODE HERE) ---im
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { DERIV_APP_ID } from '@/constants/deriv-app-config';
 import { observer } from 'mobx-react-lite';
@@ -8,7 +8,7 @@ import { api_base } from '@/external/bot-skeleton';
 import FloatingHelpTab from '@/components/FloatingHelpTab';
 import { botNotification } from '@/components/bot-notification/bot-notification';
 
-const NyanyukiPro = observer(() => {
+const CaxyNexusAIPro = observer(() => {
     // ============================================
     // 1. ACCESS THE STORES AND OBSERVER
     // ============================================
@@ -685,7 +685,7 @@ const NyanyukiPro = observer(() => {
     // ============================================
     const logToJournal = useCallback((message, type = 'info', pushToDeriv = false) => {
         const timestamp = new Date().toLocaleTimeString();
-        const logMsg = `[${timestamp}] [Nyanyuki] ${message}`;
+        const logMsg = `[${timestamp}] [Caxy Nexus AI] ${message}`;
 
         const colors = {
             error: '#EF4444',
@@ -703,7 +703,7 @@ const NyanyukiPro = observer(() => {
         if (pushToDeriv && botObserver) {
             try {
                 botObserver.emit('bot.message', {
-                    message: `[Nyanyuki] ${message}`,
+                    message: `[Caxy Nexus AI] ${message}`,
                     className: type,
                     timestamp: Date.now(),
                     data: {
@@ -787,7 +787,7 @@ const NyanyukiPro = observer(() => {
             
             return true;
         } catch (err) {
-            console.error('[Nyanyuki] pushTransaction failed:', err);
+            console.error('[Caxy Nexus AI] pushTransaction failed:', err);
             return false;
         }
     }, [logToJournal, transactionsStore, currency, symbol, runPanelStore, activeTradesCount]);
@@ -1066,7 +1066,7 @@ const NyanyukiPro = observer(() => {
             
             if (botObserver) {
                 botObserver.emit('bot.message', {
-                    message: `[Nyanyuki Pro] ⏹️ Bot stopped | Mode: ${mode} | P/L: $${localProfitTracker.current.toFixed(2)}`,
+                    message: `[Caxy Nexus AI] ⏹️ Bot stopped | Mode: ${mode} | P/L: $${localProfitTracker.current.toFixed(2)}`,
                     className: localProfitTracker.current >= 0 ? 'success' : 'warn',
                     timestamp: Date.now()
                 });
@@ -1126,7 +1126,7 @@ const NyanyukiPro = observer(() => {
                 botObserver.emit('bot.running', {});
             }
             
-            logToJournal(`▶️ Nyanyuki Pro (${mode}) started`, 'info', true);
+            logToJournal(`▶️ Caxy Nexus AI (${mode}) started`, 'info', true);
             
             if (window.dbot?.startAnimation) {
                 window.dbot.startAnimation();
@@ -1150,7 +1150,7 @@ const NyanyukiPro = observer(() => {
                     originalValue = newValue;
                     
                     if (newValue === false && oldValue === true && isBotRunningRef.current && !isStoppingRef.current) {
-                        console.log('[Nyanyuki] Run Panel STOP via property change');
+                        console.log('[Caxy Nexus AI] Run Panel STOP via property change');
                         syncWithRunPanel(false);
                     }
                 },
@@ -1158,7 +1158,7 @@ const NyanyukiPro = observer(() => {
                 enumerable: true
             });
         } catch (e) {
-            console.warn('[Nyanyuki] Could not override is_running property', e);
+            console.warn('[Caxy Nexus AI] Could not override is_running property', e);
         }
 
         let lastKnownState = runPanelStore.is_running;
@@ -1168,7 +1168,7 @@ const NyanyukiPro = observer(() => {
             if (currentState !== lastKnownState) {
                 lastKnownState = currentState;
                 if (currentState === false && isBotRunningRef.current && !isStoppingRef.current) {
-                    console.log('[Nyanyuki] Backup check: STOP detected');
+                    console.log('[Caxy Nexus AI] Backup check: STOP detected');
                     syncWithRunPanel(false);
                 }
             }
@@ -1513,13 +1513,13 @@ const NyanyukiPro = observer(() => {
                             if (!tpSlTriggered.current && parseFloat(parallelTakeProfit) > 0 && newTotalPL >= parseFloat(parallelTakeProfit)) {
                                 tpSlTriggered.current = true;
                                 logToJournal(`🎯 Take Profit reached: $${newTotalPL.toFixed(2)}`, 'success', true);
-                                botNotification(`🎯 Nyanyuki Pro — Take Profit Hit! P/L: +$${newTotalPL.toFixed(2)}`, undefined, { type: 'success', autoClose: 8000 });
+                                botNotification(`🎯 Caxy Nexus AI — Take Profit Hit! P/L: +$${newTotalPL.toFixed(2)}`, undefined, { type: 'success', autoClose: 8000 });
                                 parallelAutoRunActive.current = false;
                                 syncWithRunPanel(false);
                             } else if (!tpSlTriggered.current && parseFloat(parallelStopLoss) > 0 && newTotalPL <= -parseFloat(parallelStopLoss)) {
                                 tpSlTriggered.current = true;
                                 logToJournal(`🛑 Stop Loss triggered: $${newTotalPL.toFixed(2)}`, 'error', true);
-                                botNotification(`🛑 Nyanyuki Pro — Stop Loss Hit! P/L: $${newTotalPL.toFixed(2)}`, undefined, { type: 'error', autoClose: 8000 });
+                                botNotification(`🛑 Caxy Nexus AI — Stop Loss Hit! P/L: $${newTotalPL.toFixed(2)}`, undefined, { type: 'error', autoClose: 8000 });
                                 parallelAutoRunActive.current = false;
                                 syncWithRunPanel(false);
                             } else if (parallelAutoRunActive.current && isBotRunningRef.current && !tpSlTriggered.current) {
@@ -1747,7 +1747,7 @@ const NyanyukiPro = observer(() => {
                     if (!buyData.is_manual && !tpSlTriggered.current && parseFloat(takeProfit) > 0 && localProfitTracker.current >= parseFloat(takeProfit)) {
                         tpSlTriggered.current = true;
                         logToJournal(`🎯 Take Profit reached: $${localProfitTracker.current.toFixed(2)}`, 'success', true);
-                        botNotification(`🎯 Nyanyuki Pro — Take Profit Hit! P/L: +$${localProfitTracker.current.toFixed(2)}`, undefined, { type: 'success', autoClose: 8000 });
+                        botNotification(`🎯 Caxy Nexus AI — Take Profit Hit! P/L: +$${localProfitTracker.current.toFixed(2)}`, undefined, { type: 'success', autoClose: 8000 });
                         tradeQueue.current = [];
                         isProcessingQueue.current = false;
                         dualTradeLocked.current = false;
@@ -1758,7 +1758,7 @@ const NyanyukiPro = observer(() => {
                     } else if (!buyData.is_manual && !tpSlTriggered.current && parseFloat(stopLoss) > 0 && localProfitTracker.current <= -parseFloat(stopLoss)) {
                         tpSlTriggered.current = true;
                         logToJournal(`🛑 Stop Loss triggered: $${localProfitTracker.current.toFixed(2)}`, 'error', true);
-                        botNotification(`🛑 Nyanyuki Pro — Stop Loss Hit! P/L: $${localProfitTracker.current.toFixed(2)}`, undefined, { type: 'error', autoClose: 8000 });
+                        botNotification(`🛑 Caxy Nexus AI — Stop Loss Hit! P/L: $${localProfitTracker.current.toFixed(2)}`, undefined, { type: 'error', autoClose: 8000 });
                         tradeQueue.current = [];
                         isProcessingQueue.current = false;
                         dualTradeLocked.current = false;
@@ -3003,7 +3003,7 @@ const NyanyukiPro = observer(() => {
         if (!tpSlTriggered.current && currentP >= targetTP && targetTP > 0) {
             tpSlTriggered.current = true;
             logToJournal(`🎯 Take Profit reached: $${currentP.toFixed(2)}`, 'success', true);
-            botNotification(`🎯 Nyanyuki Pro — Take Profit Hit! P/L: +$${currentP.toFixed(2)}`, undefined, { type: 'success', autoClose: 8000 });
+            botNotification(`🎯 Caxy Nexus AI — Take Profit Hit! P/L: +$${currentP.toFixed(2)}`, undefined, { type: 'success', autoClose: 8000 });
             tradeQueue.current = [];
             isProcessingQueue.current = false;
             dualTradeLocked.current = false;
@@ -3018,7 +3018,7 @@ const NyanyukiPro = observer(() => {
         if (!tpSlTriggered.current && currentP <= -targetSL && targetSL > 0) {
             tpSlTriggered.current = true;
             logToJournal(`🛑 Stop Loss triggered: $${currentP.toFixed(2)}`, 'error', true);
-            botNotification(`🛑 Nyanyuki Pro — Stop Loss Hit! P/L: $${currentP.toFixed(2)}`, undefined, { type: 'error', autoClose: 8000 });
+            botNotification(`🛑 Caxy Nexus AI — Stop Loss Hit! P/L: $${currentP.toFixed(2)}`, undefined, { type: 'error', autoClose: 8000 });
             tradeQueue.current = [];
             isProcessingQueue.current = false;
             dualTradeLocked.current = false;
@@ -3571,7 +3571,7 @@ const NyanyukiPro = observer(() => {
                                 if (!tpSlTriggered.current && parseFloat(takeProfit) > 0 && localProfitTracker.current >= parseFloat(takeProfit)) {
                                     tpSlTriggered.current = true;
                                     scannerLogToJournal(`🎯 Global Take Profit: ${localProfitTracker.current.toFixed(2)}`, 'success');
-                                    botNotification(`🎯 Nyanyuki Pro — Take Profit Hit! P/L: +${localProfitTracker.current.toFixed(2)}`, undefined, { type: 'success', autoClose: 8000 });
+                                    botNotification(`🎯 Caxy Nexus AI — Take Profit Hit! P/L: +${localProfitTracker.current.toFixed(2)}`, undefined, { type: 'success', autoClose: 8000 });
                                     scannerTradeLocked.current = false;
                                     scannerIsTrading.current = false;
                                     stopReasonRef.current = 'TAKE_PROFIT';
@@ -3581,7 +3581,7 @@ const NyanyukiPro = observer(() => {
                                 } else if (!tpSlTriggered.current && parseFloat(stopLoss) > 0 && localProfitTracker.current <= -parseFloat(stopLoss)) {
                                     tpSlTriggered.current = true;
                                     scannerLogToJournal(`🛑 Global Stop Loss: ${localProfitTracker.current.toFixed(2)}`, 'error');
-                                    botNotification(`🛑 Nyanyuki Pro — Stop Loss Hit! P/L: ${localProfitTracker.current.toFixed(2)}`, undefined, { type: 'error', autoClose: 8000 });
+                                    botNotification(`🛑 Caxy Nexus AI — Stop Loss Hit! P/L: ${localProfitTracker.current.toFixed(2)}`, undefined, { type: 'error', autoClose: 8000 });
                                     scannerTradeLocked.current = false;
                                     scannerIsTrading.current = false;
                                     stopReasonRef.current = 'STOP_LOSS';
@@ -3816,7 +3816,7 @@ const NyanyukiPro = observer(() => {
         wsLastPongTime.current = Date.now();
         
         ws.onopen = () => {
-            console.log('[Nyanyuki] WebSocket connected for', symbol);
+            console.log('[Caxy Nexus AI] WebSocket connected for', symbol);
             wsReconnectAttempts.current = 0;
             
             ws.send(JSON.stringify({
@@ -3831,7 +3831,7 @@ const NyanyukiPro = observer(() => {
                 if (ws.readyState === WebSocket.OPEN) {
                     ws.send(JSON.stringify({ ping: 1 }));
                     if (Date.now() - wsLastPongTime.current > 30000) {
-                        console.log('[Nyanyuki] WebSocket heartbeat timeout, reconnecting...');
+                        console.log('[Caxy Nexus AI] WebSocket heartbeat timeout, reconnecting...');
                         ws.close();
                     }
                 }
@@ -3945,13 +3945,13 @@ const NyanyukiPro = observer(() => {
             
             if (wsReconnectAttempts.current < maxAttempts) {
                 wsReconnectAttempts.current++;
-                console.log(`[Nyanyuki] Attempting to reconnect WebSocket in ${delay}ms (attempt ${wsReconnectAttempts.current}/${maxAttempts})`);
+                console.log(`[Caxy Nexus AI] Attempting to reconnect WebSocket in ${delay}ms (attempt ${wsReconnectAttempts.current}/${maxAttempts})`);
                 
                 wsReconnectTimeout.current = setTimeout(() => {
                     connectWebSocket();
                 }, delay);
             } else {
-                console.error('[Nyanyuki] Max WebSocket reconnection attempts reached');
+                console.error('[Caxy Nexus AI] Max WebSocket reconnection attempts reached');
                 logToJournal('⚠️ WebSocket connection lost, please refresh page', 'warn', true);
             }
         };
@@ -3993,7 +3993,7 @@ const NyanyukiPro = observer(() => {
                 }
             }
 
-            logToJournal(`🤖 Nyanyuki Pro - ${mode} MODE`, 'success', true);
+            logToJournal(`🤖 Caxy Nexus AI - ${mode} MODE`, 'success', true);
             logToJournal(`📊 ${symbol} | ${isRiseFall(contractType) ? (contractType === 'CALL' ? 'RISE 📈' : 'FALL 📉') : contractType}`, 'info', true);
 
             if (mode === 'MANUAL') {
@@ -4174,7 +4174,7 @@ const NyanyukiPro = observer(() => {
         
         return (
             <a
-                href="https://nyanyukiautotradeguide.pages.dev/"
+                href="https://caxydtraderpro.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -4215,7 +4215,7 @@ const NyanyukiPro = observer(() => {
                     setIsHovered(false);
                     setTimeout(() => setIsHovered(false), 200);
                 }}
-                title="Click to view Nyanyuki Bot Guide"
+                title="Click to view Caxy Nexus AI Guide"
             >
                 <span style={{
                     transform: isHovered ? 'scale(1.1)' : 'scale(1)',
@@ -8287,4 +8287,4 @@ const NyanyukiPro = observer(() => {
     );
 });
 
-export default NyanyukiPro;
+export default CaxyNexusAIPro;

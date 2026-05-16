@@ -28,7 +28,7 @@ const DigitCircleTool = () => {
         {
             id: 1,
             type: 'ai',
-            message: "👋 **WELCOME TO NYANYUKI BOT!**\n\nI'm your intelligent trading assistant. **CLICK ANY TAB ABOVE** to get instant information!",
+            message: "👋 **WELCOME TO CAXY NEXUS AI BOT!**\n\nI'm your intelligent trading assistant. **CLICK ANY TAB ABOVE** to get instant information!",
             timestamp: new Date().toLocaleTimeString()
         }
     ]);
@@ -802,7 +802,7 @@ SwiftCash is a payment processor that connects M-PESA to Deriv instantly! It's t
 
 ✅ **Fastest way to get your money!**`,
 
-        account_create: "📝 **HOW TO CREATE AN ACCOUNT**\n\n1️⃣ Go to Deriv.com\n2️⃣ Click 'Sign Up'\n3️⃣ Enter email and password\n4️⃣ Verify your email\n5️⃣ Complete your profile\n\n✅ Done! You can now log in to Nyanyuki!",
+        account_create: "📝 **HOW TO CREATE AN ACCOUNT**\n\n1️⃣ Go to Deriv.com\n2️⃣ Click 'Sign Up'\n3️⃣ Enter email and password\n4️⃣ Verify your email\n5️⃣ Complete your profile\n\n✅ Done! You can now log in to Caxy Nexus AI!",
         
         account_verify: "✅ **ACCOUNT VERIFICATION**\n\n**Required Documents:**\n• Passport/ID/Driver's license\n• Utility bill (less than 3 months)\n\n**Steps:**\n1️⃣ Log in to Deriv\n2️⃣ Go to Settings → Verification\n3️⃣ Upload clear photos\n4️⃣ Wait 1-2 business days\n\n⚠️ You CANNOT withdraw without verification!",
         
@@ -2122,7 +2122,7 @@ ${signalsText}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ fontSize: '18px' }}>🤖</span>
                             <div>
-                                <h3 style={{ color: '#000', margin: 0, fontSize: '13px', fontWeight: 'bold' }}>Nyanyuki Assistant</h3>
+                                <h3 style={{ color: '#000', margin: 0, fontSize: '13px', fontWeight: 'bold' }}>Caxy Nexus AI Assistant</h3>
                                 <span style={{ fontSize: '9px', color: '#000', opacity: 0.8 }}>Click tabs above</span>
                             </div>
                         </div>
@@ -2132,7 +2132,7 @@ ${signalsText}
                                     setChatMessages([{
                                         id: 1,
                                         type: 'ai',
-                                        message: "👋 **WELCOME TO NYANYUKI BOT!**\n\nI'm your intelligent trading assistant. **CLICK ANY TAB ABOVE** to get instant information!",
+                                        message: "👋 **WELCOME TO CAXY NEXUS AI BOT!**\n\nI'm your intelligent trading assistant. **CLICK ANY TAB ABOVE** to get instant information!",
                                         timestamp: new Date().toLocaleTimeString()
                                     }]);
                                     setActiveTab('main');

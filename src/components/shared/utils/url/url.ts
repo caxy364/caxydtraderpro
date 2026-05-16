@@ -61,11 +61,11 @@ export const urlFor = (path: string, options: TOption = {}) => {
 
     if (legacy) {
         if (getPlatformFromUrl().is_staging_deriv_app) {
-            domain = domain.replace(/staging-app\.deriv\.com/, `nyanyuki.site/staging/${lang || 'en'}`);
+            domain = domain.replace(/staging-app\.deriv\.com/, `caxydtraderpro.vercel.app/staging/${lang || 'en'}`);
         } else if (getPlatformFromUrl().is_deriv_app) {
-            domain = domain.replace(/app\.deriv\.com/, `nyanyuki.site/${lang || 'en'}`);
+            domain = domain.replace(/app\.deriv\.com/, `caxydtraderpro.vercel.app/${lang || 'en'}`);
         } else {
-            domain = `https://nyanyuki.site${lang || 'en'}/`;
+            domain = `https://caxydtraderpro.vercel.app${lang || 'en'}/`;
         }
     }
 

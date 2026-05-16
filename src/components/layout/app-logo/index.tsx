@@ -7,6 +7,6 @@ export const AppLogo = () => {
 
     if (!isDesktop) return null;
     return (
-        <DerivLogo className='app-header__logo' href="https://nyanyukiautotradeguide.pages.dev/" target='_blank'/>
+        <DerivLogo className='app-header__logo' href="https://caxydtraderpro.vercel.app/" target='_blank'/>
     );
 };

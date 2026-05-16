@@ -23,7 +23,7 @@ const Chart = lazy(() => import('../chart'));
 const Tutorial = lazy(() => import('../tutorials'));
 
 // These files need to be created in the same directory
-const NyanyukiPro = lazy(() => import('./Nyanyukipro'));
+const CaxyNexusAIPro = lazy(() => import('./Nyanyukipro'));
 const DigitCircleTool = lazy(() => import('./Digitcircletool'));
 
 // Helper to check if user is using OAuth
@@ -214,26 +214,26 @@ const BotIcon = () => (
     </svg>
 );
 
-const NyanyukiProIcon = () => (
+const CaxyNexusAIProIcon = () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#nyanyuki-gradient1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M2 17L12 22L22 17" stroke="url(#nyanyuki-gradient2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M2 12L12 17L22 12" stroke="url(#nyanyuki-gradient3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="12" cy="12" r="2" fill="url(#nyanyuki-gradient4)" />
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#caxynexus-gradient1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M2 17L12 22L22 17" stroke="url(#caxynexus-gradient2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M2 12L12 17L22 12" stroke="url(#caxynexus-gradient3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="12" cy="12" r="2" fill="url(#caxynexus-gradient4)" />
         <defs>
-            <linearGradient id="nyanyuki-gradient1" x1="2" y1="2" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+            <linearGradient id="caxynexus-gradient1" x1="2" y1="2" x2="22" y2="12" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#FF6B6B" />
                 <stop offset="1" stopColor="#FF8E8E" />
             </linearGradient>
-            <linearGradient id="nyanyuki-gradient2" x1="2" y1="17" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+            <linearGradient id="caxynexus-gradient2" x1="2" y1="17" x2="22" y2="22" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#4ECDC4" />
                 <stop offset="1" stopColor="#45B7D1" />
             </linearGradient>
-            <linearGradient id="nyanyuki-gradient3" x1="2" y1="12" x2="22" y2="17" gradientUnits="userSpaceOnUse">
+            <linearGradient id="caxynexus-gradient3" x1="2" y1="12" x2="22" y2="17" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#FFE194" />
                 <stop offset="1" stopColor="#F1C40F" />
             </linearGradient>
-            <linearGradient id="nyanyuki-gradient4" x1="10" y1="10" x2="14" y2="14" gradientUnits="userSpaceOnUse">
+            <linearGradient id="caxynexus-gradient4" x1="10" y1="10" x2="14" y2="14" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#9B59B6" />
                 <stop offset="1" stopColor="#8E44AD" />
             </linearGradient>
@@ -241,7 +241,7 @@ const NyanyukiProIcon = () => (
     </svg>
 );
 
-let NYANYUKI_BOT_STOP_HANDLER = null;
+let CAXYNEXUS_BOT_STOP_HANDLER = null;
 
 // --- DTRADER TAB COMPONENT (Updated for OAuth) ---
 const DTraderTab = observer(() => {
@@ -405,7 +405,7 @@ const FloatingHelpTab = React.memo(() => {
     
     return (
         <a
-            href="https://nyanyukiautotradeguide.pages.dev/"
+            href="https://caxydtraderpro.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -435,7 +435,7 @@ const FloatingHelpTab = React.memo(() => {
                 willChange: 'transform',
                 transform: 'translateZ(0)',
             }}
-            title="Click to view Nyanyuki Bot Guide"
+            title="Click to view Caxy Nexus AI Guide"
         >
             <span style={{
                 display: 'flex',
@@ -638,7 +638,7 @@ const AppWrapper = observer(() => {
 
                         <div label={<><AnalysisToolIcon /><Localize i18n_default_text='Auto Trades' /></>} id='id-analysis-tool'>
                             <Suspense fallback={<ChunkLoader message='Loading Auto Trades...' />}>
-                                <NyanyukiPro />
+                                <CaxyNexusAIPro />
                             </Suspense>
                         </div>
 
