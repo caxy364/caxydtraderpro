@@ -286,7 +286,11 @@ export const AuthWrapper = () => {
                 }
 
                 // ── Case 4: Not logged in ────────────────────────────────
-                URLUtils.filterSearchParams(['lang']);
+                // Skip URL manipulation on /callback — the code and state
+                // params must be preserved exactly as Deriv sent them.
+                if (!window.location.pathname.includes('/callback')) {
+                    URLUtils.filterSearchParams(['lang']);
+                }
             } catch (error) {
                 console.error('[AuthWrapper] Auth initialization error:', error);
             } finally {

@@ -14,19 +14,30 @@ const CallbackPage: React.FC = () => {
 
     useEffect(() => {
         const handleCallback = async () => {
-            const code = searchParams.get('code');
-            const state = searchParams.get('state');
-            const errorParam = searchParams.get('error');
+            // Read directly from window.location.search to bypass any
+            // React Router / history.pushState desync issues
+            const rawParams = new URLSearchParams(window.location.search);
+            const code = rawParams.get('code') || searchParams.get('code');
+            const state = rawParams.get('state') || searchParams.get('state');
+            const errorParam = rawParams.get('error') || searchParams.get('error');
+
+            console.log('[Callback] URL:', window.location.href);
+            console.log('[Callback] Raw params:', Object.fromEntries(rawParams.entries()));
+            console.log('[Callback] code:', code, '| state:', state, '| error:', errorParam);
 
             if (errorParam) {
-                setError(errorParam);
+                setError(`OAuth error: ${errorParam}`);
                 setLoading(false);
                 console.error('[Callback] OAuth error:', errorParam);
                 return;
             }
 
             if (!code) {
-                setError('No authorization code received');
+                const allParams = Object.fromEntries(rawParams.entries());
+                const paramsSummary = Object.keys(allParams).length
+                    ? `Params received: ${JSON.stringify(allParams)}`
+                    : 'No params in URL';
+                setError(`No authorization code received. ${paramsSummary}`);
                 setLoading(false);
                 return;
             }
@@ -34,10 +45,13 @@ const CallbackPage: React.FC = () => {
             const savedState = sessionStorage.getItem('oauth_state');
             const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
 
-            if (state !== savedState) {
-                setError('State mismatch - possible CSRF attack');
+            console.log('[Callback] savedState:', savedState, '| receivedState:', state);
+            console.log('[Callback] codeVerifier present:', !!codeVerifier);
+
+            if (state && savedState && state !== savedState) {
+                setError(`State mismatch — possible CSRF attack. Received: ${state}`);
                 setLoading(false);
-                console.error('[Callback] State mismatch');
+                console.error('[Callback] State mismatch — received:', state, '— saved:', savedState);
                 return;
             }
 
