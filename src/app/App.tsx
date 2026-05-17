@@ -47,6 +47,14 @@ const router = createBrowserRouter(
 
 function App() {
     useEffect(() => {
+        // Make #root visible immediately when React mounts.
+        // index.html hides #root until the splash timer completes,
+        // but if React is already running we can reveal it right away.
+        const root = document.getElementById('root');
+        if (root) root.classList.add('visible');
+    }, []);
+
+    useEffect(() => {
         initSurvicate();
         window?.dataLayer?.push({ event: 'page_load' });
 

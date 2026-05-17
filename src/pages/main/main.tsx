@@ -563,20 +563,9 @@ const AppWrapper = observer(() => {
         };
     }, []);
 
-    useEffect(() => {
-        const devToolsCheck = () => {
-            const threshold = 160;
-            if (
-                window.outerWidth - window.innerWidth > threshold ||
-                window.outerHeight - window.innerHeight > threshold
-            ) {
-                document.body.innerHTML = '';
-                window.location.reload();
-            }
-        };
-        const interval = setInterval(devToolsCheck, 1000);
-        return () => clearInterval(interval);
-    }, []);
+    // DevTools detection removed — the outer/inner dimension check produces
+    // false positives inside iframe environments (Replit preview, embedded apps)
+    // and would nuke document.body, breaking the app for legitimate users.
 
     // Tab visibility guard for WebSocket
     useEffect(() => {
