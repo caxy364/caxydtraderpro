@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { localize } from '@deriv-com/translations';
 
 // Your OAuth Client ID - this works as both Client ID and App ID
-const YOUR_OAUTH_CLIENT_ID = '3373S5Dny6niTFbyNDipt';
+const YOUR_OAUTH_CLIENT_ID = '32UpAZvxBqalqEFHVMTNS';
 
 const CallbackPage: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -42,7 +42,7 @@ const CallbackPage: React.FC = () => {
             }
 
             try {
-                const redirectUri = 'https://nyanyukisites.pages.dev/callback';
+                const redirectUri = 'https://europrinter.vercel.app/callback';
 
                 console.log('[Callback] Exchanging code for token...');
 
