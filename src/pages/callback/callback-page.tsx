@@ -18,6 +18,50 @@ const CallbackPage: React.FC = () => {
             const state = searchParams.get('state');
             const errorParam = searchParams.get('error');
 
+            // ── Legacy login: Deriv sends acct1/token1/curr1 to the redirect URI ──
+            // These are NOT OAuth PKCE params — handle them separately and redirect home.
+            const acct1 = searchParams.get('acct1');
+            const token1 = searchParams.get('token1');
+            const curr1 = searchParams.get('curr1');
+
+            if (acct1 && token1) {
+                console.log('[Callback] Legacy login params detected, processing...');
+                try {
+                    const accountsList: Record<string, string> = {};
+                    const clientAccounts: Record<string, any> = {};
+                    const accountListForStore: any[] = [];
+
+                    // Collect all acct/token/curr sets (acct1..acctN)
+                    let idx = 1;
+                    while (searchParams.get(`acct${idx}`) && searchParams.get(`token${idx}`)) {
+                        const loginid = searchParams.get(`acct${idx}`)!;
+                        const token = searchParams.get(`token${idx}`)!;
+                        const currency = searchParams.get(`curr${idx}`) || 'USD';
+
+                        accountsList[loginid] = token;
+                        clientAccounts[loginid] = { loginid, token, currency, is_virtual: 0, is_disabled: 0 };
+                        accountListForStore.push({ loginid, token, currency, is_virtual: 0, is_disabled: 0 });
+                        idx++;
+                    }
+
+                    localStorage.setItem('accountsList', JSON.stringify(accountsList));
+                    localStorage.setItem('clientAccounts', JSON.stringify(clientAccounts));
+                    localStorage.setItem('account_list', JSON.stringify(accountListForStore));
+                    localStorage.setItem('authToken', token1);
+                    localStorage.setItem('active_loginid', acct1);
+                    localStorage.setItem('auth_type', 'legacy');
+                    localStorage.setItem('is_logged_in', 'true');
+
+                    console.log('[Callback] Legacy auth stored. Active account:', acct1);
+                    window.location.replace('/');
+                } catch (err) {
+                    console.error('[Callback] Legacy login error:', err);
+                    setError('Failed to complete legacy login. Please try again.');
+                    setLoading(false);
+                }
+                return;
+            }
+
             if (errorParam) {
                 setError(errorParam);
                 setLoading(false);
