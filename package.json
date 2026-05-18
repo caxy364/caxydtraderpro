@@ -69,7 +69,9 @@
         "ua-parser-js": "^1.0.38",
         "usehooks-ts": "^3.1.0",
         "uuid": "^9.0.1",
-        "yup": "^1.4.0"
+        "yup": "^1.4.0",
+        "i18next": "^23.0.0",
+        "react-i18next": "^14.0.0"
     },
     "devDependencies": {
         "@babel/core": "^7.24.7",

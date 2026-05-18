@@ -78,8 +78,9 @@ export default defineConfig({
     dev: {
         hmr: true,
         client: {
-            host: '0.0.0.0',
-            port: 5000,
+            host: process.env.REPLIT_DEV_DOMAIN || '0.0.0.0',
+            port: process.env.REPLIT_DEV_DOMAIN ? 443 : 5000,
+            protocol: process.env.REPLIT_DEV_DOMAIN ? 'wss' : 'ws',
         },
     },
     tools: {
@@ -91,7 +92,7 @@ export default defineConfig({
                     {
                         test: /\.xml$/,
                         exclude: /node_modules/,
-                        use: 'raw-loader',
+                        type: 'asset/source',
                     },
                 ],
             },
