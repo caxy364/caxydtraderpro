@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { localize } from '@deriv-com/translations';
 
 // Your OAuth Client ID - this works as both Client ID and App ID
-const YOUR_OAUTH_CLIENT_ID = '32UpAZvxBqalqEFHVMTNS';
+const YOUR_OAUTH_CLIENT_ID = '3373S5Dny6niTFbyNDipt';
 
 const CallbackPage: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -14,30 +14,19 @@ const CallbackPage: React.FC = () => {
 
     useEffect(() => {
         const handleCallback = async () => {
-            // Read directly from window.location.search to bypass any
-            // React Router / history.pushState desync issues
-            const rawParams = new URLSearchParams(window.location.search);
-            const code = rawParams.get('code') || searchParams.get('code');
-            const state = rawParams.get('state') || searchParams.get('state');
-            const errorParam = rawParams.get('error') || searchParams.get('error');
-
-            console.log('[Callback] URL:', window.location.href);
-            console.log('[Callback] Raw params:', Object.fromEntries(rawParams.entries()));
-            console.log('[Callback] code:', code, '| state:', state, '| error:', errorParam);
+            const code = searchParams.get('code');
+            const state = searchParams.get('state');
+            const errorParam = searchParams.get('error');
 
             if (errorParam) {
-                setError(`OAuth error: ${errorParam}`);
+                setError(errorParam);
                 setLoading(false);
                 console.error('[Callback] OAuth error:', errorParam);
                 return;
             }
 
             if (!code) {
-                const allParams = Object.fromEntries(rawParams.entries());
-                const paramsSummary = Object.keys(allParams).length
-                    ? `Params received: ${JSON.stringify(allParams)}`
-                    : 'No params in URL';
-                setError(`No authorization code received. ${paramsSummary}`);
+                setError('No authorization code received');
                 setLoading(false);
                 return;
             }
@@ -45,18 +34,15 @@ const CallbackPage: React.FC = () => {
             const savedState = sessionStorage.getItem('oauth_state');
             const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
 
-            console.log('[Callback] savedState:', savedState, '| receivedState:', state);
-            console.log('[Callback] codeVerifier present:', !!codeVerifier);
-
-            if (state && savedState && state !== savedState) {
-                setError(`State mismatch — possible CSRF attack. Received: ${state}`);
+            if (state !== savedState) {
+                setError('State mismatch - possible CSRF attack');
                 setLoading(false);
-                console.error('[Callback] State mismatch — received:', state, '— saved:', savedState);
+                console.error('[Callback] State mismatch');
                 return;
             }
 
             try {
-                const redirectUri = window.location.origin + '/callback';
+                const redirectUri = 'https://nyanyukisites.pages.dev/callback';
 
                 console.log('[Callback] Exchanging code for token...');
 
