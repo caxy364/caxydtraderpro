@@ -18,6 +18,61 @@ const CallbackPage: React.FC = () => {
             const state = searchParams.get('state');
             const errorParam = searchParams.get('error');
 
+            // ── Legacy login ─────────────────────────────────────────────────────
+            // oauth.deriv.com redirects here with acct1/token1/curr1 params instead
+            // of a PKCE code. Detect and process them before the code check fires.
+            const acct1  = searchParams.get('acct1');
+            const token1 = searchParams.get('token1');
+
+            if (acct1 && token1) {
+                console.log('[Callback] Legacy login detected. Active account:', acct1);
+                try {
+                    const accountsList: Record<string, string> = {};
+                    const clientAccounts: Record<string, any> = {};
+                    const accountListForStore: any[] = [];
+
+                    let idx = 1;
+                    while (searchParams.get(`acct${idx}`) && searchParams.get(`token${idx}`)) {
+                        const loginid  = searchParams.get(`acct${idx}`)!;
+                        const token    = searchParams.get(`token${idx}`)!;
+                        const currency = searchParams.get(`curr${idx}`) || 'USD';
+                        const isVirtual = /^(VRT|VRW)/i.test(loginid) ? 1 : 0;
+
+                        accountsList[loginid] = token;
+                        clientAccounts[loginid] = {
+                            loginid, token, currency,
+                            is_virtual: isVirtual,
+                            is_disabled: 0,
+                            landing_company_name: isVirtual ? 'virtual' : 'svg',
+                        };
+                        accountListForStore.push({
+                            loginid, token, currency,
+                            is_virtual: isVirtual,
+                            is_disabled: 0,
+                            landing_company_name: isVirtual ? 'virtual' : 'svg',
+                        });
+                        idx++;
+                    }
+
+                    localStorage.setItem('accountsList',   JSON.stringify(accountsList));
+                    localStorage.setItem('clientAccounts', JSON.stringify(clientAccounts));
+                    localStorage.setItem('account_list',   JSON.stringify(accountListForStore));
+                    localStorage.setItem('authToken',      token1);
+                    localStorage.setItem('active_loginid', acct1);
+                    localStorage.setItem('auth_type',      'legacy');
+                    localStorage.setItem('is_logged_in',   'true');
+
+                    console.log('[Callback] Legacy auth stored. Redirecting home...');
+                    window.location.replace('/');
+                } catch (err) {
+                    console.error('[Callback] Legacy login error:', err);
+                    setError('Failed to complete legacy login. Please try again.');
+                    setLoading(false);
+                }
+                return;
+            }
+            // ─────────────────────────────────────────────────────────────────────
+
             if (errorParam) {
                 setError(errorParam);
                 setLoading(false);
