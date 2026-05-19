@@ -86,13 +86,7 @@ export default defineConfig({
     tools: {
         rspack: {
             plugins: [],
-            resolve: {
-                alias: {
-                    react: path.resolve('./node_modules/react'),
-                    'react-dom': path.resolve('./node_modules/react-dom'),
-                    'react/jsx-runtime': path.resolve('./node_modules/react/jsx-runtime'),
-                },
-            },
+            resolve: {},
             module: {
                 rules: [
                     {
