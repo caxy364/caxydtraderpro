@@ -277,10 +277,18 @@ export const AuthWrapper = () => {
                 const legacyType = localStorage.getItem('auth_type');
                 if (legacyToken && legacyType === 'legacy') {
                     console.log('[AuthWrapper] Legacy stored session detected');
-                    const storedLoginid = localStorage.getItem('active_loginid');
-                    if (storedLoginid && clientRef.current) {
-                        clientRef.current.setLoginId(storedLoginid);
-                        clientRef.current.setIsLoggedIn(true);
+                    // Full hydration: currency, accounts, balance, loginid all set at once.
+                    // This ensures DTrader, bot builder, and run-panel all have correct
+                    // state before making their first API call.
+                    const synced = syncOAuthToClientStore(clientRef.current);
+                    if (!synced) {
+                        // Fallback when clientAccounts is missing (fresh legacy URL login
+                        // handled by Case 1 — this branch is the stored-session reload path)
+                        const storedLoginid = localStorage.getItem('active_loginid');
+                        if (storedLoginid && clientRef.current) {
+                            clientRef.current.setLoginId(storedLoginid);
+                            clientRef.current.setIsLoggedIn(true);
+                        }
                     }
                     setIsAuthorized(true);
                 }
