@@ -8,13 +8,7 @@ import MobileFullPageModal from '@/components/shared_ui/mobile-full-page-modal';
 import Text from '@/components/shared_ui/text';
 import { DBOT_TABS } from '@/constants/bot-contents';
 import { useStore } from '@/hooks/useStore';
-import {
-    DerivLightBotBuilderIcon,
-    DerivLightGoogleDriveIcon,
-    DerivLightLocalDeviceIcon,
-    DerivLightMyComputerIcon,
-    DerivLightQuickStrategyIcon,
-} from '@deriv/quill-icons/Illustration';
+import { IllustrativePlatformsIcon as DerivLightBotBuilderIcon, IllustrativeComputerIcon as DerivLightGoogleDriveIcon, IllustrativeMobileIcon as DerivLightLocalDeviceIcon, IllustrativeComputerIcon as DerivLightMyComputerIcon, IllustrativeChartsIcon as DerivLightQuickStrategyIcon } from '@deriv/quill-icons/Illustrative';
 import { Localize, localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import { rudderStackSendOpenEvent } from '../../analytics/rudderstack-common-events';

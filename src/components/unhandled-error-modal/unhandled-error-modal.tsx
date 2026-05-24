@@ -1,5 +1,5 @@
 import React from 'react';
-import { DerivLightUserErrorIcon } from '@deriv/quill-icons/Illustration';
+import { IllustrativeCriticalIcon as DerivLightUserErrorIcon } from '@deriv/quill-icons/Illustrative';
 import { getDefaultError } from '../shared/utils/constants';
 import Button from '../shared_ui/button';
 import DesktopWrapper from '../shared_ui/desktop-wrapper';

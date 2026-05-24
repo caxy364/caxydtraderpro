@@ -1,4 +1,4 @@
-import { DerivLightUserErrorIcon } from '@deriv/quill-icons/Illustration';
+import { IllustrativeCriticalIcon as DerivLightUserErrorIcon } from '@deriv/quill-icons/Illustrative';
 import { Localize } from '@deriv-com/translations';
 import Button from '../shared_ui/button';
 import Text from '../shared_ui/text';

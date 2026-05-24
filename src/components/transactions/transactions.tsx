@@ -9,7 +9,7 @@ import { TContractInfo } from '@/components/summary/summary-card.types';
 import { contract_stages } from '@/constants/contract-stage';
 import { transaction_elements } from '@/constants/transactions';
 import { useStore } from '@/hooks/useStore';
-import { DerivLightEmptyCardboardBoxIcon } from '@deriv/quill-icons/Illustration';
+import { IllustrativeBasketIcon as DerivLightEmptyCardboardBoxIcon } from '@deriv/quill-icons/Illustrative';
 import { Localize } from '@deriv-com/translations';
 import { useDevice } from '@deriv-com/ui';
 import ThemedScrollbars from '../shared_ui/themed-scrollbars';
