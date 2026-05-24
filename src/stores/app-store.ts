@@ -157,6 +157,9 @@ export default class AppStore {
             }
         }, 10000);
 
+        if (!this.dbot_store) {
+            this.setDBotEngineStores();
+        }
         if (!this.dbot_store) return;
 
         blockly_store.setLoading(true);

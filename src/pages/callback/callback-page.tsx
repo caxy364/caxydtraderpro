@@ -418,6 +418,11 @@ const CallbackPage: React.FC = () => {
                     })
                 );
 
+                localStorage.setItem(
+                    'user_currency',
+                    activeAccount?.currency || 'USD'
+                );
+
                 console.log(
                     '[Callback] Secure login complete:',
                     activeLoginId

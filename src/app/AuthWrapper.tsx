@@ -155,6 +155,9 @@ export const syncOAuthToClientStore = (client: any): boolean => {
                 client.accounts[acc.loginid] = acc;
             });
 
+            // Keep user_currency in sync so the trade engine always has it
+            localStorage.setItem('user_currency', account.currency || 'USD');
+
             console.log('[AuthWrapper] ✅ ClientSStore synced — is_logged_in = true');
         }
 
