@@ -15,7 +15,16 @@ export default class ClientSStore {
     loginid = '';
     account_list: TAuthData['account_list'] = [];
     balance = '0';
-    currency = 'USD';
+    currency: string = (() => {
+        try {
+            const stored = localStorage.getItem('active_account');
+            if (stored) {
+                const activeAccount = JSON.parse(stored);
+                return activeAccount?.currency || 'USD';
+            }
+        } catch (e) {}
+        return 'USD';
+    })();
     is_logged_in = false;
     account_status: GetAccountStatus | undefined;
     account_settings: GetSettings | undefined;
