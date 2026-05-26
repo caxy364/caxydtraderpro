@@ -3,9 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { localize } from '@deriv-com/translations';
-
-// Your OAuth Client ID
-const YOUR_OAUTH_CLIENT_ID = '32UpAZvxBqalqEFHVMTNS';
+import { requestOidcToken, requestLegacyToken } from '@deriv-com/auth-client';
 
 const CallbackPage: React.FC = () => {
     const [searchParams] = useSearchParams();
@@ -14,53 +12,38 @@ const CallbackPage: React.FC = () => {
 
     useEffect(() => {
         const handleCallback = async () => {
-            const code = searchParams.get('code');
-
-            // LEGACY TOKENS
+            // ── LEGACY LOGIN PARAMS ──────────────────────────────────────
             const token1 = searchParams.get('token1');
             const acct1 = searchParams.get('acct1');
             const cur1 = searchParams.get('cur1');
 
-            const state = searchParams.get('state');
+            // ── OIDC PARAMS ───────────────────────────────────────────────
+            const code = searchParams.get('code');
             const errorParam = searchParams.get('error');
 
-            //
-            // OAUTH ERROR
-            //
             if (errorParam) {
                 setError(errorParam);
                 setLoading(false);
-
-                console.error('[Callback] OAuth error:', errorParam);
-
+                console.error('[Callback] Auth error:', errorParam);
                 return;
             }
 
-            //
-            // NO VALID AUTH RESPONSE
-            //
             if (!code && !token1) {
-                setError('No authorization code or legacy token received');
+                setError('No authorization code or legacy token received.');
                 setLoading(false);
-
                 return;
             }
 
-            //
-            // ============================================================
-            // LEGACY LOGIN FLOW
-            // ============================================================
-            //
+            // ================================================================
+            // LEGACY LOGIN FLOW  (acct1 / token1 / cur1 URL params)
+            // ================================================================
             if (token1 && acct1) {
                 try {
                     console.log('[Callback] Processing legacy login...');
 
                     const isVirtual = acct1.startsWith('VR');
 
-                    const accountsList: Record<string, string> = {
-                        [acct1]: token1,
-                    };
-
+                    const accountsList: Record<string, string> = { [acct1]: token1 };
                     const clientAccounts: Record<string, any> = {
                         [acct1]: {
                             loginid: acct1,
@@ -69,12 +52,9 @@ const CallbackPage: React.FC = () => {
                             balance: 0,
                             is_virtual: isVirtual ? 1 : 0,
                             is_disabled: 0,
-                            landing_company_name: isVirtual
-                                ? 'virtual'
-                                : 'svg',
+                            landing_company_name: isVirtual ? 'virtual' : 'svg',
                         },
                     };
-
                     const accountListForStore = [
                         {
                             loginid: acct1,
@@ -83,380 +63,136 @@ const CallbackPage: React.FC = () => {
                             balance: 0,
                             is_virtual: isVirtual ? 1 : 0,
                             is_disabled: 0,
-                            landing_company_name: isVirtual
-                                ? 'virtual'
-                                : 'svg',
+                            landing_company_name: isVirtual ? 'virtual' : 'svg',
                         },
                     ];
 
-                    //
-                    // SAVE STORAGE
-                    //
-                    localStorage.setItem(
-                        'accountsList',
-                        JSON.stringify(accountsList)
-                    );
-
-                    localStorage.setItem(
-                        'clientAccounts',
-                        JSON.stringify(clientAccounts)
-                    );
-
-                    localStorage.setItem(
-                        'account_list',
-                        JSON.stringify(accountListForStore)
-                    );
-
+                    localStorage.setItem('accountsList', JSON.stringify(accountsList));
+                    localStorage.setItem('clientAccounts', JSON.stringify(clientAccounts));
+                    localStorage.setItem('account_list', JSON.stringify(accountListForStore));
                     localStorage.setItem('active_loginid', acct1);
-
                     localStorage.setItem('authToken', token1);
-
                     localStorage.setItem('auth_type', 'legacy');
-
                     localStorage.setItem('config.app_id', '111670');
-
                     localStorage.setItem('is_logged_in', 'true');
+                    localStorage.setItem('active_account', JSON.stringify({
+                        loginid: acct1,
+                        currency: cur1 || 'USD',
+                        balance: 0,
+                        is_virtual: isVirtual ? 1 : 0,
+                        landing_company_name: isVirtual ? 'virtual' : 'svg',
+                    }));
+                    localStorage.setItem('user_currency', cur1 || 'USD');
 
-                    localStorage.setItem(
-                        'active_account',
-                        JSON.stringify({
-                            loginid: acct1,
-                            currency: cur1 || 'USD',
-                            balance: 0,
-                            is_virtual: isVirtual ? 1 : 0,
-                            landing_company_name: isVirtual
-                                ? 'virtual'
-                                : 'svg',
-                        })
-                    );
-
-                    console.log(
-                        '[Callback] Legacy login successful:',
-                        acct1
-                    );
-
-                    //
-                    // REDIRECT
-                    //
+                    console.log('[Callback] Legacy login saved:', acct1);
                     window.location.replace('/');
-
                     return;
+
                 } catch (err) {
-                    console.error(
-                        '[Callback] Legacy login error:',
-                        err
-                    );
-
+                    console.error('[Callback] Legacy login error:', err);
                     setError('Failed to complete legacy login.');
-
                     setLoading(false);
-
                     return;
                 }
             }
 
-            //
-            // ============================================================
-            // SECURE PKCE LOGIN FLOW
-            // ============================================================
-            //
-
-            const savedState = sessionStorage.getItem('oauth_state');
-            const codeVerifier = sessionStorage.getItem(
-                'pkce_code_verifier'
-            );
-
-            if (state !== savedState) {
-                setError('State mismatch - possible CSRF attack');
-
-                setLoading(false);
-
-                console.error('[Callback] State mismatch');
-
-                return;
-            }
-
+            // ================================================================
+            // OIDC / PKCE LOGIN FLOW
+            // Uses @deriv-com/auth-client to exchange OIDC code → trading tokens
+            // ================================================================
             try {
-                const redirectUri =
-                    'https://europrinter.vercel.app/callback';
+                console.log('[Callback] Processing OIDC login...');
 
-                console.log(
-                    '[Callback] Exchanging code for token...'
-                );
-
-                //
-                // STEP 1: TOKEN EXCHANGE
-                //
-                const tokenResponse = await fetch(
-                    'https://auth.deriv.com/oauth2/token',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type':
-                                'application/x-www-form-urlencoded',
-                        },
-                        body: new URLSearchParams({
-                            grant_type: 'authorization_code',
-                            client_id: YOUR_OAUTH_CLIENT_ID,
-                            code: code!,
-                            redirect_uri: redirectUri,
-                            code_verifier: codeVerifier || '',
-                        }),
-                    }
-                );
-
-                const tokenData = await tokenResponse.json();
-
-                if (tokenData.error) {
-                    setError(
-                        tokenData.error_description ||
-                            tokenData.error
-                    );
-
-                    setLoading(false);
-
-                    console.error(
-                        '[Callback] Token error:',
-                        tokenData.error
-                    );
-
-                    return;
-                }
-
-                const accessToken = tokenData.access_token;
-                const refreshToken = tokenData.refresh_token;
-
-                console.log(
-                    '[Callback] Access token obtained'
-                );
-
-                //
-                // STEP 2: FETCH ACCOUNTS
-                //
-                const accountsResponse = await fetch(
-                    'https://api.derivws.com/trading/v1/options/accounts',
-                    {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                            'Deriv-App-ID':
-                                YOUR_OAUTH_CLIENT_ID,
-                        },
-                    }
-                );
-
-                const accountsData =
-                    await accountsResponse.json();
-
-                const accounts =
-                    accountsData.data ||
-                    accountsData.accounts ||
-                    [];
-
-                console.log(
-                    '[Callback] Accounts fetched:',
-                    accounts.length
-                );
-
-                if (accounts.length === 0) {
-                    setError(
-                        'No trading accounts found. Please contact support.'
-                    );
-
-                    setLoading(false);
-
-                    return;
-                }
-
-                //
-                // STEP 3: BUILD STORAGE STRUCTURES
-                //
-                const accountsList: Record<string, string> =
-                    {};
-
-                const clientAccounts: Record<string, any> =
-                    {};
-
-                const accountListForStore: any[] = [];
-
-                accounts.forEach((account: any) => {
-                    const loginid =
-                        account.account_id ||
-                        account.loginid;
-
-                    const isVirtual =
-                        account.account_type === 'demo';
-
-                    accountsList[loginid] = accessToken;
-
-                    clientAccounts[loginid] = {
-                        loginid,
-                        token: accessToken,
-                        currency:
-                            account.currency || 'USD',
-                        balance: account.balance || 0,
-                        account_type:
-                            account.account_type,
-                        is_virtual: isVirtual ? 1 : 0,
-                        is_disabled: 0,
-                        landing_company_name:
-                            isVirtual
-                                ? 'virtual'
-                                : 'svg',
-                    };
-
-                    accountListForStore.push({
-                        loginid,
-                        token: accessToken,
-                        currency:
-                            account.currency || 'USD',
-                        balance: account.balance || 0,
-                        is_virtual: isVirtual ? 1 : 0,
-                        is_disabled: 0,
-                        landing_company_name:
-                            isVirtual
-                                ? 'virtual'
-                                : 'svg',
-                        account_type:
-                            account.account_type,
-                    });
+                // Step 1: Exchange OIDC code for access token
+                const { accessToken } = await requestOidcToken({
+                    redirectCallbackUri: `${window.location.origin}/callback`,
                 });
 
-                //
-                // STEP 4: ACTIVE ACCOUNT
-                //
-                const demoAccount = accounts.find(
-                    (acc: any) =>
-                        acc.account_type === 'demo'
-                );
-
-                const realAccount = accounts.find(
-                    (acc: any) =>
-                        acc.account_type === 'real'
-                );
-
-                const activeAccount =
-                    demoAccount ||
-                    realAccount ||
-                    accounts[0];
-
-                const activeLoginId =
-                    activeAccount?.account_id ||
-                    activeAccount?.loginid;
-
-                //
-                // STEP 5: SAVE STORAGE
-                //
-                localStorage.setItem(
-                    'accountsList',
-                    JSON.stringify(accountsList)
-                );
-
-                localStorage.setItem(
-                    'clientAccounts',
-                    JSON.stringify(clientAccounts)
-                );
-
-                localStorage.setItem(
-                    'active_loginid',
-                    activeLoginId
-                );
-
-                localStorage.setItem(
-                    'authToken',
-                    accessToken
-                );
-
-                localStorage.setItem(
-                    'auth_type',
-                    'oauth'
-                );
-
-                localStorage.setItem(
-                    'deriv_app_id',
-                    YOUR_OAUTH_CLIENT_ID
-                );
-
-                localStorage.setItem(
-                    'oauth_client_id',
-                    YOUR_OAUTH_CLIENT_ID
-                );
-
-                if (refreshToken) {
-                    localStorage.setItem(
-                        'refresh_token',
-                        refreshToken
-                    );
+                if (!accessToken) {
+                    setError('Authentication failed: no access token received.');
+                    setLoading(false);
+                    return;
                 }
 
-                localStorage.setItem(
-                    'is_logged_in',
-                    'true'
-                );
+                console.log('[Callback] OIDC access token obtained, fetching trading tokens...');
 
+                // Step 2: Exchange access token for real Deriv WS trading tokens
+                // Returns: { acct1, token1, cur1, acct2?, token2?, cur2?, acct3?, token3?, cur3? }
+                const legacyTokens = await requestLegacyToken(accessToken);
+
+                if (!legacyTokens?.acct1 || !legacyTokens?.token1) {
+                    setError('No trading accounts found. Please ensure your Deriv account is active.');
+                    setLoading(false);
+                    return;
+                }
+
+                console.log('[Callback] Trading tokens obtained, building session...');
+
+                // Step 3: Build account structures from LegacyTokens (up to 3 accounts)
+                const accountsList: Record<string, string> = {};
+                const clientAccounts: Record<string, any> = {};
+                const accountListForStore: any[] = [];
+
+                for (let i = 1; i <= 3; i++) {
+                    const acct = legacyTokens[`acct${i}` as keyof typeof legacyTokens];
+                    const tkn = legacyTokens[`token${i}` as keyof typeof legacyTokens];
+                    const cur = legacyTokens[`cur${i}` as keyof typeof legacyTokens];
+
+                    if (!acct || !tkn) break;
+
+                    const isVirt = acct.startsWith('VR');
+
+                    accountsList[acct] = tkn;
+                    clientAccounts[acct] = {
+                        loginid: acct,
+                        token: tkn,
+                        currency: cur || 'USD',
+                        balance: 0,
+                        is_virtual: isVirt ? 1 : 0,
+                        is_disabled: 0,
+                        landing_company_name: isVirt ? 'virtual' : 'svg',
+                    };
+                    accountListForStore.push({
+                        loginid: acct,
+                        token: tkn,
+                        currency: cur || 'USD',
+                        balance: 0,
+                        is_virtual: isVirt ? 1 : 0,
+                        is_disabled: 0,
+                        landing_company_name: isVirt ? 'virtual' : 'svg',
+                    });
+                }
+
+                // Step 4: Select primary account (prefer real over virtual)
+                const primaryAccount =
+                    accountListForStore.find(a => !a.loginid.startsWith('VR')) ||
+                    accountListForStore[0];
+
+                // Step 5: Save to localStorage — same structure as legacy login
+                // auth_type is 'legacy' because we now have real WS trading tokens
+                localStorage.setItem('accountsList', JSON.stringify(accountsList));
+                localStorage.setItem('clientAccounts', JSON.stringify(clientAccounts));
+                localStorage.setItem('account_list', JSON.stringify(accountListForStore));
+                localStorage.setItem('active_loginid', primaryAccount.loginid);
+                localStorage.setItem('authToken', primaryAccount.token);
+                localStorage.setItem('auth_type', 'legacy');
                 localStorage.setItem('config.app_id', '111670');
+                localStorage.setItem('is_logged_in', 'true');
+                localStorage.setItem('active_account', JSON.stringify({
+                    loginid: primaryAccount.loginid,
+                    currency: primaryAccount.currency,
+                    balance: 0,
+                    is_virtual: primaryAccount.is_virtual,
+                    landing_company_name: primaryAccount.landing_company_name,
+                }));
+                localStorage.setItem('user_currency', primaryAccount.currency);
 
-                localStorage.setItem(
-                    'account_list',
-                    JSON.stringify(accountListForStore)
-                );
-
-                localStorage.setItem(
-                    'active_account',
-                    JSON.stringify({
-                        loginid: activeLoginId,
-                        currency:
-                            activeAccount?.currency ||
-                            'USD',
-                        balance:
-                            activeAccount?.balance || 0,
-                        is_virtual:
-                            activeAccount?.account_type ===
-                            'demo'
-                                ? 1
-                                : 0,
-                        landing_company_name:
-                            activeAccount?.account_type ===
-                            'demo'
-                                ? 'virtual'
-                                : 'svg',
-                    })
-                );
-
-                localStorage.setItem(
-                    'user_currency',
-                    activeAccount?.currency || 'USD'
-                );
-
-                console.log(
-                    '[Callback] Secure login complete:',
-                    activeLoginId
-                );
-
-                //
-                // CLEANUP
-                //
-                sessionStorage.removeItem(
-                    'oauth_state'
-                );
-
-                sessionStorage.removeItem(
-                    'pkce_code_verifier'
-                );
-
-                //
-                // REDIRECT
-                //
+                console.log('[Callback] OIDC login complete:', primaryAccount.loginid);
                 window.location.replace('/');
+
             } catch (err) {
-                console.error(
-                    '[Callback] Token exchange error:',
-                    err
-                );
-
-                setError(
-                    'Failed to complete login. Please try again.'
-                );
-
+                console.error('[Callback] OIDC login error:', err);
+                setError('Login failed. Please try again.');
                 setLoading(false);
             }
         };
@@ -464,93 +200,56 @@ const CallbackPage: React.FC = () => {
         handleCallback();
     }, [searchParams]);
 
-    //
     // LOADING SCREEN
-    //
     if (loading) {
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100vh',
-                    background: '#07090e',
-                    color: '#F0F4FF',
-                    gap: '20px',
-                }}
-            >
-                <div
-                    style={{
-                        width: '48px',
-                        height: '48px',
-                        border:
-                            '3px solid rgba(226,105,6,0.2)',
-                        borderTopColor: '#e26906',
-                        borderRightColor: '#FFD700',
-                        borderRadius: '50%',
-                        animation:
-                            'spin 0.9s linear infinite',
-                    }}
-                />
-
-                <p>
-                    {localize(
-                        'Completing your login...'
-                    )}
-                </p>
-
-                <style>{`
-                    @keyframes spin {
-                        to {
-                            transform: rotate(360deg);
-                        }
-                    }
-                `}</style>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                background: '#07090e',
+                color: '#F0F4FF',
+                gap: '20px',
+            }}>
+                <div style={{
+                    width: '48px',
+                    height: '48px',
+                    border: '3px solid rgba(226,105,6,0.2)',
+                    borderTopColor: '#e26906',
+                    borderRightColor: '#FFD700',
+                    borderRadius: '50%',
+                    animation: 'spin 0.9s linear infinite',
+                }} />
+                <p>{localize('Completing your login...')}</p>
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
         );
     }
 
-    //
     // ERROR SCREEN
-    //
     if (error) {
         return (
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100vh',
-                    background: '#07090e',
-                    color: '#F0F4FF',
-                    textAlign: 'center',
-                    padding: '20px',
-                    gap: '20px',
-                }}
-            >
-                <h2 style={{ color: '#e74c3c' }}>
-                    {localize('Login Error')}
-                </h2>
-
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                background: '#07090e',
+                color: '#F0F4FF',
+                textAlign: 'center',
+                padding: '20px',
+                gap: '20px',
+            }}>
+                <h2 style={{ color: '#e74c3c' }}>{localize('Login Error')}</h2>
                 <p>{error}</p>
-
                 <button
                     onClick={() => {
-                        localStorage.removeItem(
-                            'is_logged_in'
-                        );
-
-                        localStorage.removeItem(
-                            'authToken'
-                        );
-
-                        localStorage.removeItem(
-                            'accountsList'
-                        );
-
+                        localStorage.removeItem('is_logged_in');
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('accountsList');
                         window.location.href = '/';
                     }}
                     style={{
@@ -561,7 +260,6 @@ const CallbackPage: React.FC = () => {
                         border: '1px solid #e26906',
                         borderRadius: '4px',
                         fontSize: '14px',
-                        transition: 'all 0.3s',
                     }}
                 >
                     {localize('Return to Home')}

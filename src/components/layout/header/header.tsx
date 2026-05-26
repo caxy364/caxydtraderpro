@@ -14,7 +14,7 @@ import { AppLogo } from '../app-logo';
 import AccountSwitcher from './account-switcher';
 import MobileMenu from './mobile-menu';
 import './header.scss';
-import { generateCodeVerifier, generateCodeChallenge, generateState } from '@/utils/pkce';
+import { requestOidcAuthentication } from '@deriv-com/auth-client';
 
 // Custom hook for real-time balance updates
 const useHeaderBalance = () => {
@@ -304,34 +304,19 @@ const AppHeader = observer(() => {
     };
 
     const handleLegacyLogin = () => {
-        window.location.replace(`https://oauth.deriv.com/oauth2/authorize?app_id=${DERIV_APP_ID}&l=EN&brand=caxynexusai`);
+        window.location.replace(`https://oauth.deriv.com/oauth2/authorize?app_id=${DERIV_APP_ID}&l=EN&brand=deriv`);
     };
 
     const handleSecureOAuthLogin = async () => {
-        const clientId = '32UpAZvxBqalqEFHVMTNS';
-        const redirectUri = window.location.origin + '/callback';
-        const scope = 'trade account_manage';
-
-        const codeVerifier = generateCodeVerifier();
-        const codeChallenge = await generateCodeChallenge(codeVerifier);
-        const state = generateState();
-
-        sessionStorage.setItem('pkce_code_verifier', codeVerifier);
-        sessionStorage.setItem('oauth_state', state);
-
-        const params = new URLSearchParams({
-            response_type: 'code',
-            client_id: clientId,
-            redirect_uri: redirectUri,
-            scope,
-            state,
-            code_challenge: codeChallenge,
-            code_challenge_method: 'S256',
-        });
-
-        const authUrl = `https://auth.deriv.com/oauth2/auth?${params.toString()}`;
-        console.log('[Header] OAuth Redirect:', authUrl);
-        window.location.assign(authUrl);
+        try {
+            await requestOidcAuthentication({
+                redirectCallbackUri: `${window.location.origin}/callback`,
+                postLoginRedirectUri: window.location.origin,
+                postLogoutRedirectUri: window.location.origin,
+            });
+        } catch (error) {
+            console.error('[Header] OIDC authentication failed:', error);
+        }
     };
 
     const renderAccountSection = () => {

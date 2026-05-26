@@ -260,6 +260,26 @@ export const AuthWrapper = () => {
             sanitizeConfigStorage();
 
             try {
+                // ── Migration: Clear old JWT OAuth sessions ──────────────
+                // Pre-OIDC sessions stored auth_type='oauth' with a JWT Bearer token.
+                // After the OIDC migration, all logins produce auth_type='legacy' with
+                // real WS trading tokens (a1-xxxxx). Stale JWT sessions cannot be used
+                // to authorize against the WebSocket API, so clear them and let the
+                // user re-login cleanly.
+                const existingAuthType = localStorage.getItem('auth_type');
+                const existingAuthToken = localStorage.getItem('authToken');
+                if (existingAuthType === 'oauth' && existingAuthToken && !existingAuthToken.startsWith('a1-')) {
+                    console.log('[AuthWrapper] Clearing stale pre-OIDC OAuth session (JWT token detected)');
+                    const keysToRemove = [
+                        'auth_type', 'authToken', 'accountsList', 'clientAccounts',
+                        'account_list', 'active_loginid', 'is_logged_in', 'active_account',
+                        'user_currency', 'active_account_data',
+                    ];
+                    keysToRemove.forEach(k => localStorage.removeItem(k));
+                    setIsAuthComplete(true);
+                    return;
+                }
+
                 // ── Case 1: Legacy login via URL params ──────────────────
                 if (loginInfo.length > 0) {
                     console.log('[AuthWrapper] Legacy login via URL params');

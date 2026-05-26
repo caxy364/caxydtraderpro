@@ -112,20 +112,7 @@ class APIBase {
             this.api?.connection.addEventListener('close', this.onsocketclose.bind(this));
         }
 
-        // OAuth users: connection exists for public API calls (contracts_for, etc.)
-        // Auth state and active symbols are handled by derivWS — skip authorize/subscribe.
-        if (this.isOAuthUser()) {
-            console.log('[APIBase] OAuth user: public WS ready, skipping authorize/subscribe');
-            this.toggleRunButton(false);
-            setConnectionStatus(CONNECTION_STATUS.OPENED);
-            setIsAuthorized(true);
-            if (!this.has_active_symbols) {
-                this.active_symbols_promise = this.getActiveSymbols() as Promise<void>;
-            }
-            return;
-        }
-
-        // Legacy path: authorize and set up subscriptions
+        // All users: authorize and set up subscriptions
         if (!this.has_active_symbols && !V2GetActiveToken()) {
             this.active_symbols_promise = this.getActiveSymbols() as Promise<void>;
         }
@@ -169,12 +156,6 @@ class APIBase {
     }
 
     reconnectIfNotConnected = () => {
-        // Skip for OAuth users - they use derivWS for connection
-        if (this.isOAuthUser()) {
-            console.log('[APIBase] OAuth user, skipping reconnect');
-            return;
-        }
-
         console.log('connection state: ', this.api?.connection?.readyState);
         if (this.api?.connection?.readyState && this.api?.connection?.readyState > 1) {
             console.log('Info: Connection to the server was closed, trying to reconnect.');
@@ -183,12 +164,6 @@ class APIBase {
     };
 
     async authorizeAndSubscribe() {
-        // Skip for OAuth users
-        if (this.isOAuthUser()) {
-            console.log('[APIBase] OAuth user, skipping authorizeAndSubscribe');
-            return;
-        }
-
         const token = V2GetActiveToken();
         if (token) {
             this.token = token;
@@ -224,17 +199,10 @@ class APIBase {
 
     async getSelfExclusion() {
         if (!this.api || !this.is_authorized) return;
-        if (this.isOAuthUser()) return;
         await this.api.getSelfExclusion();
     }
 
     async subscribe() {
-        // Skip for OAuth users - subscriptions handled by derivWS
-        if (this.isOAuthUser()) {
-            console.log('[APIBase] OAuth user, skipping legacy subscriptions');
-            return;
-        }
-
         const subscribeToStream = (streamName: string) => {
             return doUntilDone(
                 () => {
@@ -258,48 +226,6 @@ class APIBase {
     }
 
     getActiveSymbols = async () => {
-        // OAuth path: pull symbols from derivWS which already fetched them
-        if (this.isOAuthUser()) {
-            // Return immediately if already populated
-            if (this.active_symbols.length) {
-                this.has_active_symbols = true;
-                this.toggleRunButton(false);
-                return this.active_symbols;
-            }
-
-            try {
-                // derivWS singleton already fetched symbols during initialize()
-                // Import dynamically to avoid circular deps
-                const { default: derivWS } = await import('../derivWS');
-
-                let symbols = derivWS.getActiveSymbolsList();
-
-                if (!symbols || symbols.length === 0) {
-                    console.log('[APIBase] derivWS symbols not ready yet, fetching now...');
-                    symbols = await derivWS.getActiveSymbols();
-                }
-
-                if (symbols && symbols.length > 0) {
-                    const pip_sizes: Record<string, number> = {};
-                    symbols.forEach(({ symbol, pip }: { symbol: string; pip: string }) => {
-                        pip_sizes[symbol] = +(+pip).toExponential().substring(3);
-                    });
-                    this.pip_sizes = pip_sizes;
-                    this.active_symbols = symbols;
-                    this.has_active_symbols = true;
-                    this.toggleRunButton(false);
-                    console.log(`[APIBase] OAuth: loaded ${symbols.length} active symbols from derivWS`);
-                } else {
-                    console.warn('[APIBase] OAuth: derivWS returned no active symbols');
-                }
-            } catch (error) {
-                console.error('[APIBase] OAuth: failed to load active symbols from derivWS:', error);
-            }
-
-            return this.active_symbols;
-        }
-
-        // Legacy path: fetch via WebSocket API
         await doUntilDone(() => this.api?.send({ active_symbols: 'brief' }), [], this).then(
             ({ active_symbols = [], error = {} }) => {
                 const pip_sizes = {};

@@ -12,7 +12,7 @@ export const generateDerivApiInstance = () => {
     const query_params = new URLSearchParams(window.location.search);
     const cleanedAppId = query_params.get('app_id') || MY_APP_ID;
     
-    const socket_url = `wss://ws.binaryws.com/websockets/v3?app_id=${cleanedAppId}&l=${getInitialLanguage()}&brand=${website_name.toLowerCase()}`;
+    const socket_url = `wss://ws.derivws.com/websockets/v3?app_id=${cleanedAppId}&l=${getInitialLanguage()}&brand=deriv`;
     
     const deriv_socket = new WebSocket(socket_url);
     const deriv_api = new DerivAPIBasic({

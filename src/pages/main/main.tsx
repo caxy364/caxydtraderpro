@@ -33,18 +33,8 @@ const isOAuthUser = (): boolean => {
     return authType === 'oauth' && !!authToken;
 };
 
-// Helper to check if WebSocket is connected (works for both legacy and OAuth)
+// Helper to check if WebSocket is connected
 const isWebSocketConnected = (connectionStatus: string): boolean => {
-    // For OAuth users, check if derivWS is connected
-    if (isOAuthUser()) {
-        const derivWS = (window as any).derivWS;
-        if (derivWS) {
-            return derivWS.isDemoConnected?.() || derivWS.isRealConnected?.();
-        }
-        return false;
-    }
-    
-    // For legacy users, check connection status
     return connectionStatus === CONNECTION_STATUS.OPENED;
 };
 
