@@ -5,6 +5,7 @@ import ChunkLoader from '@/components/loader/chunk-loader';
 import { generateDerivApiInstance } from '@/external/bot-skeleton/services/api/appId';
 import { localize } from '@deriv-com/translations';
 import { URLUtils } from '@deriv-com/utils';
+import { sanitizeConfigStorage } from '@/components/shared/utils/config/config';
 import App from './App';
 import derivWS from '@/external/bot-skeleton/services/derivWS';
 import { useStore } from '@/hooks/useStore';
@@ -254,6 +255,9 @@ export const AuthWrapper = () => {
         const initializeAuth = async () => {
             if (hasInitialized.current) return;
             hasInitialized.current = true;
+
+            // Enforce correct App ID and clean stale localStorage values
+            sanitizeConfigStorage();
 
             try {
                 // ── Case 1: Legacy login via URL params ──────────────────

@@ -1,0 +1,172 @@
+import { LocalStorageConstants, LocalStorageUtils, URLUtils } from '@deriv-com/utils';
+import { isLocal } from './site-config';
+import { DERIV_APP_ID } from '@/constants/deriv-app-config';
+
+/**
+ * =========================================================
+ * CORE CONSTANTS (SINGLE SOURCE OF TRUTH)
+ * =========================================================
+ */
+
+// Legacy WebSocket App ID (CRITICAL FOR TRADING)
+export const LEGACY_APP_ID = '111670';
+
+// OAuth Client ID (PKCE FLOW ONLY)
+export const OAUTH_CLIENT_ID = '32UpAZvxBqalqEFHVMTNS';
+
+// Primary production domain
+export const APP_DOMAIN = 'https://europrinter.vercel.app';
+
+// Allowed websocket servers
+const VALID_WS_SERVERS = ['green.derivws.com', 'blue.derivws.com', 'red.derivws.com'];
+
+/**
+ * =========================================================
+ * APP ID VALIDATION (LEGACY SAFETY LOCK)
+ * =========================================================
+ */
+
+export const getAppId = (): string => {
+    let app_id = window.localStorage.getItem('config.app_id');
+
+    const isValidLegacy =
+        app_id === LEGACY_APP_ID;
+
+    const isValidOAuth =
+        app_id === OAUTH_CLIENT_ID;
+
+    // Reject ALL invalid or stale app IDs (including 61554, 69811, etc.)
+    if (!isValidLegacy && !isValidOAuth) {
+        console.warn('[CONFIG] Invalid or stale App ID detected. Resetting to legacy default.');
+
+        app_id = LEGACY_APP_ID;
+        window.localStorage.setItem('config.app_id', app_id);
+    }
+
+    console.log('[CONFIG] Active App ID:', app_id);
+
+    return app_id!;
+};
+
+/**
+ * =========================================================
+ * SERVER SELECTION (REAL vs DEMO LOGIC)
+ * =========================================================
+ */
+
+const isRealAccount = (loginid?: string | null) => {
+    if (!loginid) return false;
+    return !/^(VRT|VRW)/.test(loginid);
+};
+
+const getDefaultServerURL = (): string => {
+    if (isLocal()) {
+        return 'ws.derivws.com';
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const acct = searchParams.get('acct1');
+
+    const storedLoginId =
+        window.localStorage.getItem('active_loginid') || acct;
+
+    return isRealAccount(storedLoginId)
+        ? 'green.derivws.com'
+        : 'blue.derivws.com';
+};
+
+/**
+ * =========================================================
+ * APP ID + SERVER COMBINATION
+ * =========================================================
+ */
+
+export const getDefaultAppIdAndUrl = () => {
+    const server_url = getDefaultServerURL();
+
+    const app_id = getAppId();
+
+    return {
+        app_id,
+        server_url,
+    };
+};
+
+/**
+ * =========================================================
+ * LOCAL STORAGE CLEANUP (ANTI-CLUTTER GUARD)
+ * =========================================================
+ */
+
+export const sanitizeConfigStorage = () => {
+    const validAppIds = [LEGACY_APP_ID, OAUTH_CLIENT_ID];
+
+    const storedAppId = window.localStorage.getItem('config.app_id');
+
+    if (!storedAppId || !validAppIds.includes(storedAppId)) {
+        window.localStorage.setItem('config.app_id', LEGACY_APP_ID);
+    }
+
+    // Remove known bad legacy values
+    if (storedAppId === '61554' || storedAppId === '69811') {
+        console.warn('[CONFIG] Removing deprecated App ID:', storedAppId);
+        window.localStorage.setItem('config.app_id', LEGACY_APP_ID);
+    }
+
+    // Ensure server URL exists
+    if (!window.localStorage.getItem('config.server_url')) {
+        window.localStorage.setItem(
+            'config.server_url',
+            getDefaultServerURL()
+        );
+    }
+};
+
+/**
+ * =========================================================
+ * WEBSOCKET URL
+ * =========================================================
+ */
+
+export const getSocketURL = (): string => {
+    return (
+        window.localStorage.getItem('config.server_url') ||
+        getDefaultServerURL()
+    );
+};
+
+/**
+ * =========================================================
+ * DEBUG / ENV HELPERS
+ * =========================================================
+ */
+
+export const isProduction = (): boolean => {
+    return window.location.hostname === 'europrinter.vercel.app';
+};
+
+export const isTestLink = (): boolean => {
+    return (
+        window.location.origin.includes('.vercel.app') ||
+        window.location.origin.includes('localhost') ||
+        window.location.origin.includes('.binary.sx')
+    );
+};
+
+/**
+ * =========================================================
+ * OAUTH URL GENERATION (DO NOT MIX APP_ID HERE)
+ * =========================================================
+ */
+
+export const generateOAuthURL = (): string => {
+    const { getOauthURL } = URLUtils;
+
+    const oauth_url = new URL(getOauthURL());
+
+    // ALWAYS enforce correct OAuth client ID
+    oauth_url.searchParams.set('client_id', OAUTH_CLIENT_ID);
+    oauth_url.searchParams.set('redirect_uri', `${APP_DOMAIN}/callback`);
+
+    return oauth_url.toString();
+};

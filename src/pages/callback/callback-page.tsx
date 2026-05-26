@@ -113,6 +113,8 @@ const CallbackPage: React.FC = () => {
 
                     localStorage.setItem('auth_type', 'legacy');
 
+                    localStorage.setItem('config.app_id', '111670');
+
                     localStorage.setItem('is_logged_in', 'true');
 
                     localStorage.setItem(
@@ -390,6 +392,8 @@ const CallbackPage: React.FC = () => {
                     'is_logged_in',
                     'true'
                 );
+
+                localStorage.setItem('config.app_id', '111670');
 
                 localStorage.setItem(
                     'account_list',

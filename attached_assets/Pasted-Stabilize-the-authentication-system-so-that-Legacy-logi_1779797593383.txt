@@ -1,0 +1,122 @@
+Stabilize the authentication system so that:
+
+Legacy login always uses app_id = 111670
+OAuth login always uses client_id = 32UpAZvxBqalqEFHVMTNS
+No stale or invalid app_id (e.g. 61554) ever persists in localStorage
+WebSocket authorization is always consistent with account type
+europrinter.vercel.app is the single trusted redirect domain
+📁 DIRECTORIES THAT MUST BE RECTIFIED
+1. src/utils/site-config.ts
+Fix:
+Ensure ONLY ONE source of truth for app domain
+Remove duplicate or conflicting website_name assignments
+Standardize domain:
+export const website_domain = 'https://europrinter.vercel.app/';
+export const website_name = 'EuroPrinter';
+2. src/utils/config.ts OR src/utils/site-config.ts (App ID Logic)
+CRITICAL FIX:
+Replace unsafe getAppId() logic
+Enforce strict validation:
+Must enforce:
+Only 111670 is valid for legacy WebSocket flow
+Reject ALL other IDs including 61554, 69811, etc.
+3. src/utils/site-config.ts (or equivalent config layer)
+Fix:
+Ensure no hardcoded or duplicated:
+website_name = website_domain
+
+❌ This is wrong and misleading
+
+4. src/pages/callback/callback-page.tsx
+Fix:
+Ensure legacy login handling:
+
+✔ acct1/token1 parsing stays intact
+✔ auth_type = 'legacy' correctly set
+✔ ALWAYS overwrite any injected app_id with 111670
+
+Add safety:
+
+Before saving session:
+
+localStorage.setItem('config.app_id', '111670');
+5. src/hooks/useOauth2.ts
+Fix:
+DO NOT allow feature flag bypass to interfere with auth logic
+isOAuth2Enabled = false must NOT disable real OAuth flow unintentionally
+6. src/components/layout/header/header.tsx
+Fix:
+Ensure OAuth login URL uses correct client ID ONLY:
+https://auth.deriv.com/oauth2/authorize
+?client_id=32UpAZvxBqalqEFHVMTNS
+
+❌ Never allow app_id=61554 or legacy injection here
+
+7. src/components/layout/app-logo/index.tsx
+Fix:
+Ensure all branding URLs point to:
+https://europrinter.vercel.app
+
+Remove all legacy or duplicate domains.
+
+8. src/components/shared/utils/url/url.ts
+CRITICAL FIX:
+Remove any fallback that injects old domains
+Ensure:
+
+✔ staging → europrinter staging
+✔ production → europrinter.vercel.app
+
+❌ Remove nyanyuki / caxy / old domains completely
+
+9. src/stores/client-store.ts
+Fix:
+Ensure currency consistency:
+
+❌ Remove duplicate currency declaration:
+
+currency = 'USD';
+currency = 'AUD';
+
+✔ Must be single source of truth from account sync
+
+10. src/pages/main/main.tsx
+Fix:
+Ensure only ONE active trading component:
+
+✔ CaxyNexusAIPro (not duplicate Nyanyuki imports)
+
+11. AuthWrapper.tsx (IMPORTANT - implied core file)
+Fix:
+
+Ensure strict priority:
+
+OAuth login → auth_type = 'oauth'
+Legacy login → auth_type = 'legacy'
+Never mix both states in same session
+⚠️ GLOBAL RULES TO ENFORCE
+RULE 1 — App ID Lock
+ONLY VALID LEGACY APP ID = 111670
+
+Reject everything else automatically.
+
+RULE 2 — OAuth separation
+OAuth client_id = 32UpAZvxBqalqEFHVMTNS
+
+Never mix with app_id.
+
+RULE 3 — Single domain
+https://europrinter.vercel.app
+
+No other domain allowed anywhere in config or redirects.
+
+RULE 4 — localStorage cleanup guard
+
+On app start:
+
+Remove invalid app_id
+Remove legacy leftovers:
+61554
+69811
+nyanyuki keys
+caxy duplicates
