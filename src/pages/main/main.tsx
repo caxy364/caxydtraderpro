@@ -29,8 +29,8 @@ const DigitCircleTool = lazy(() => import('./Digitcircletool'));
 // Helper to check if user is using OAuth
 const isOAuthUser = (): boolean => {
     const authType = localStorage.getItem('auth_type');
-    const accessToken = localStorage.getItem('deriv_access_token');
-    return authType === 'oauth' && !!accessToken;
+    const authToken = localStorage.getItem('authToken');
+    return authType === 'oauth' && !!authToken;
 };
 
 // Helper to check if WebSocket is connected (works for both legacy and OAuth)
@@ -48,15 +48,8 @@ const isWebSocketConnected = (connectionStatus: string): boolean => {
     return connectionStatus === CONNECTION_STATUS.OPENED;
 };
 
-// Get App ID dynamically
-const getAppId = (): string => {
-    if (isOAuthUser()) {
-        return localStorage.getItem('deriv_app_id') || 
-               localStorage.getItem('oauth_client_id') || 
-               '111670';
-    }
-    return '111670';
-};
+// App ID — always 111670 for WebSocket/DTrader calls
+const getAppId = (): string => '111670';
 
 // --- Modern Icons with Gradient Colors ---
 const DashboardIcon = () => (
@@ -249,15 +242,24 @@ const DTraderTab = observer(() => {
     
     const loginId = localStorage.getItem('active_loginid') || client.loginid;
     const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
-    
-    // Get token - works for both OAuth and legacy
-    let token = localStorage.getItem('deriv_access_token') || 
-                localStorage.getItem('authToken') || 
-                accountsList[loginId] || '';
-    
-    const currency = client.accounts?.[loginId]?.currency || 'USD';
-    
-    // Use dynamic App ID
+
+    // Token: works for both OAuth and legacy (OAuth stores as authToken)
+    const token = localStorage.getItem('authToken') || accountsList[loginId] || '';
+
+    // Currency: read from localStorage active_account first (most reliable post-login),
+    // then fall back to MobX store, then USD
+    let currency = 'USD';
+    try {
+        const activeAccountStr = localStorage.getItem('active_account');
+        if (activeAccountStr) {
+            const activeAccount = JSON.parse(activeAccountStr);
+            currency = activeAccount?.currency || 'USD';
+        }
+    } catch (e) { /* ignore */ }
+    if (currency === 'USD') {
+        currency = client.accounts?.[loginId]?.currency || 'USD';
+    }
+
     const appId = getAppId();
 
     const iframeSrc = token

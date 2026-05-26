@@ -93,22 +93,8 @@ class APIBase {
     async init(force_create_connection = false) {
         this.toggleRunButton(true);
 
-        // OAuth users: skip legacy WS init, use derivWS instead
-        if (this.isOAuthUser()) {
-            console.log('[APIBase] OAuth user detected, skipping legacy API initialization');
-            this.toggleRunButton(false);
-            setConnectionStatus(CONNECTION_STATUS.OPENED);
-            setIsAuthorized(true);
-
-            // Ensure active_symbols_promise is always set for OAuth
-            // so that ActiveSymbols.retrieveActiveSymbols() doesn't hang
-            if (!this.has_active_symbols) {
-                this.active_symbols_promise = this.getActiveSymbols() as Promise<void>;
-            }
-            return;
-        }
-
-        // Legacy initialization
+        // Always create a public WebSocket connection so unauthenticated API
+        // calls (contracts_for, active_symbols) work for ALL user types.
         if (this.api) {
             this.unsubscribeAllSubscriptions();
         }
@@ -126,6 +112,20 @@ class APIBase {
             this.api?.connection.addEventListener('close', this.onsocketclose.bind(this));
         }
 
+        // OAuth users: connection exists for public API calls (contracts_for, etc.)
+        // Auth state and active symbols are handled by derivWS — skip authorize/subscribe.
+        if (this.isOAuthUser()) {
+            console.log('[APIBase] OAuth user: public WS ready, skipping authorize/subscribe');
+            this.toggleRunButton(false);
+            setConnectionStatus(CONNECTION_STATUS.OPENED);
+            setIsAuthorized(true);
+            if (!this.has_active_symbols) {
+                this.active_symbols_promise = this.getActiveSymbols() as Promise<void>;
+            }
+            return;
+        }
+
+        // Legacy path: authorize and set up subscriptions
         if (!this.has_active_symbols && !V2GetActiveToken()) {
             this.active_symbols_promise = this.getActiveSymbols() as Promise<void>;
         }
