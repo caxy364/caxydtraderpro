@@ -9,9 +9,9 @@ type TOption = {
     language?: string;
 };
 
-const default_domain = 'https://balozifx.pages.dev/';
+const default_domain = 'https://europrinter.vercel.app/';
 const host_map = {
-    'https://balozifx.pages.dev/': 'https://balozifx.pages.dev/',
+    'https://europrinter.vercel.app/': 'https://europrinter.vercel.app/',
 };
 
 let location_url: Location, default_language: string;
@@ -52,12 +52,12 @@ export const urlFor = (path: string, options: TOption = {}) => {
     const { legacy, language, query_string } = options;
 
     if (legacy && /^bot$/.test(path)) {
-        return `https://balozifx.pages.dev/`;
+        return `https://europrinter.vercel.app/`;
 
     }
 
     const lang = language?.toLowerCase?.() ?? default_language;
-    let domain = `https://balozifx.pages.dev/`;
+    let domain = `https://europrinter.vercel.app/`;
 
     if (legacy) {
         if (getPlatformFromUrl().is_staging_deriv_app) {
