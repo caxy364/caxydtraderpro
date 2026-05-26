@@ -405,7 +405,7 @@ const FloatingHelpTab = React.memo(() => {
     
     return (
         <a
-            href="https://caxydtraderpro.vercel.app/"
+            href="https://europrinter.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             style={{
